@@ -1,0 +1,114 @@
+.products-catalog {
+  padding: 16px;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.product-preview-item {
+  position: relative;
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.product-preview-item:hover {
+  transform: translateY(-4px);
+}
+
+.product-preview-item img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.product-preview-content {
+  padding: 16px;
+}
+
+.product-preview-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.product-preview-price {
+  font-size: 1rem;
+  color: var(--color-on-surface);
+  margin-bottom: 16px;
+}
+
+.action-button {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s;
+}
+
+.action-button:hover {
+  background-color: var(--color-primary-container);
+}
+
+.dialog {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.dialog-header {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.dialog-body {
+  font-size: 1rem;
+  margin-bottom: 16px;
+}
+
+.amount-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.amount-button {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.amount-button:hover {
+  background-color: var(--color-primary-container);
+}
+
+.submit-button {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.submit-button:hover {
+  background-color: var(--color-primary-container);
+}
