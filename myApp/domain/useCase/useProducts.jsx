@@ -7,7 +7,7 @@ import {
 } from "../../data/localCacheDao/localStorageDao";
 import { fetchProductsFromFirestore } from "../../data/remoteDao/fetchProductsFromFirestore";
 
-const useProducts = () => {
+function useProducts(){
   const [products, setProducts] = useRecoilState(productsState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

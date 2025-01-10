@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
-import "./style/productCatalog.css";
-import useProducts from '../../domain/useCase/useProducts';
 import ProductPreviewItem from "./ProductPreviewItem";
 import ProductDialog from "./ProductDialog";
+import useProducts from '../../domain/useCase/useProducts';
+import "./style/productCatalog.css";
+import CategoriesBar from "./CategoriesBar";
+
+
 
 const ProductsCatalog: React.FC = () => {
   const { products, fetchProducts, loading, error } = useProducts();
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const theTest = [
     {
       id: "1",
@@ -84,7 +88,6 @@ const ProductsCatalog: React.FC = () => {
       description: "שמנת מתוקה עשירה, מושלמת לקצפת וקינוחים.",
     },
   ];
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleProductClick = (product: any) => {
     setSelectedProduct(product);
@@ -95,33 +98,41 @@ const ProductsCatalog: React.FC = () => {
   };
 
   return (
-    <div className="products-catalog">
-      {loading && (
-        <div className="loading">
-          <CircularProgress />
-        </div>
-      )}
-      {error && (
-        <Snackbar
-          open={true}
-          message="Failed to load products."
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        />
-      )}
-      <Grid container spacing={2}>
-        {theTest.map((product: any) => (
-          <Grid item xs={12} sm={6} md={4} key={product.id}>
-            <ProductPreviewItem
-              product={product}
-              onClick={() => handleProductClick(product)}
-            />
-          </Grid>
-        ))}
-      </Grid>
-      {selectedProduct && (
-        <ProductDialog product={selectedProduct} onClose={handleCloseDialog} />
-      )}
-    </div>
+    <>
+      <CategoriesBar />
+      <div className="products-catalog">
+        {loading && (
+          <div className="loading">
+            <CircularProgress />
+          </div>
+        )}
+        {error && (
+          <Snackbar
+            open={true}
+            message="Failed to load products."
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          />
+        )}
+        <Grid container spacing={2}>
+          {theTest.map((product) => (
+            <Grid item xs={6} sm={4} md={3} key={product.id}>
+              <div onClick={() => handleProductClick(product)}>
+                <ProductPreviewItem
+                  product={product}
+                  onClick={() => handleProductClick(product)}
+                />
+              </div>
+            </Grid>
+          ))}
+        </Grid>
+        {selectedProduct && (
+          <ProductDialog
+            product={selectedProduct}
+            onClose={handleCloseDialog}
+          />
+        )}
+      </div>
+    </>
   );
 };
 
