@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Select from "react-select";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import "./style/productCatalog.css";
@@ -13,6 +14,26 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
 
   const handleIncrease = () => setAmount((prev) => prev + 1);
   const handleDecrease = () => setAmount((prev) => Math.max(prev - 1, 1));
+
+  // Values for the picker
+  const values = [
+    { value: 1, label: "1" },
+    { value: 5, label: "5" },
+    { value: 10, label: "10" },
+    { value: 20, label: "20" },
+    { value: 50, label: "50" },
+    { value: 100, label: "100" },
+    { value: 1, label: "1" },
+    { value: 5, label: "5" },
+    { value: 10, label: "10" },
+    { value: 20, label: "20" },
+    { value: 50, label: "50" },
+    { value: 100, label: "100" },
+  ];
+
+  const handleSelectChange = (selectedOption: any) => {
+    setAmount(selectedOption.value);
+  };
 
   return (
     <div className="product-dialog-overlay" onClick={onClose}>
@@ -31,11 +52,20 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
           <p>{product.description}</p>
           <p className="product-dialog-price">{product.price} ₪</p>
         </div>
+
+        {/* Adjust the + and - buttons */}
         <div className="amount-picker">
           <button onClick={handleDecrease}>-</button>
-          <span>{amount}</span>
+          <Select
+            options={values}
+            value={{ value: amount, label: amount.toString() }}
+            onChange={handleSelectChange}
+            classNamePrefix="amount-picker"
+          />
           <button onClick={handleIncrease}>+</button>
         </div>
+
+        {/* Add to cart action button */}
         <button className="product-dialog-action" onClick={onClose}>
           הוסף לסל
         </button>
