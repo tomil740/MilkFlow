@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useRecoilState } from "recoil";
-import { productsState } from "../states/productsState";
+import { useState, useEffect } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { filteredProductsState, productsState } from "../states/productsState";
 import {
   getProductsFromLocalStorage,
   setProductsToLocalStorage,
@@ -8,9 +8,11 @@ import {
 import { fetchProductsFromFirestore } from "../../data/remoteDao/fetchProductsFromFirestore";
 
 function useProducts(){
-  const [products, setProducts] = useRecoilState(productsState);
+  const products = useRecoilValue(filteredProductsState);
+  const setProducts = useRecoilState(productsState)[1];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
 
   const fetchProducts = async () => {
     if (products.length > 0) return products; // Step 1: Use Recoil state if available
@@ -38,6 +40,10 @@ function useProducts(){
       setLoading(false);
     }
   };
+
+    useEffect(() => {
+      fetchProducts();
+    }, []);
 
   return { products, fetchProducts, loading, error };
 };

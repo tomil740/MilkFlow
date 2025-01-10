@@ -277,8 +277,9 @@ body{
   transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
 }
 
-.category-item:hover {
-  transform: scale(1.13);
+
+.category-item.selected{
+  transform: scale(1.2);
   opacity: 1; /* Remove transparency on hover */
   background-color: var(--color-secondary-container); /* Use a solid color */
 }
