@@ -4,12 +4,22 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import "./style/productCatalog.css";
 
+interface CartItemref{
+  productId:string;
+  amount:number;
+}
+
 interface ProductDialogProps {
   product: any;
   onClose: () => void;
+  addToCart: (item:CartItemref) => void;
 }
 
-const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
+const ProductDialog: React.FC<ProductDialogProps> = ({
+  product,
+  onClose,
+  addToCart,
+}) => {
   const [amount, setAmount] = useState(1);
 
   const handleIncrease = () => setAmount((prev) => prev + 1);
@@ -34,6 +44,11 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
   const handleSelectChange = (selectedOption: any) => {
     setAmount(selectedOption.value);
   };
+
+  function onAddToCart(){
+    addToCart({productId:product?.id,amount:amount});
+    onClose()
+  }
 
   return (
     <div className="product-dialog-overlay" onClick={onClose}>
@@ -66,7 +81,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({ product, onClose }) => {
         </div>
 
         {/* Add to cart action button */}
-        <button className="product-dialog-action" onClick={onClose}>
+        <button className="product-dialog-action" onClick={onAddToCart}>
           הוסף לסל
         </button>
       </div>

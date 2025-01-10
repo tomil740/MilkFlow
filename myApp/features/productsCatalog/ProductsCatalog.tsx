@@ -4,15 +4,25 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
 import ProductPreviewItem from "./ProductPreviewItem";
 import ProductDialog from "./ProductDialog";
-import useProducts from '../../domain/useCase/useProducts';
+import useProducts from "../../domain/useCase/useProducts";
 import "./style/productCatalog.css";
 import CategoriesBar from "./CategoriesBar";
-
- 
+import { useCart } from '../../domain/useCase/useCart';
+import { Product } from "../../domain/models/Product";
+import { Navigate, NavLink } from "react-router-dom";
+import { to } from '../../../node_modules/typescript/lib/_tsc';
 
 const ProductsCatalog: React.FC = () => {
   const { products, fetchProducts, loading, error } = useProducts();
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const { addToCart, syncCart } = useCart(); // Use cart hook
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    // Sync cart state on component unmount or page leave
+    return () => {
+      syncCart();
+    };
+  }, [syncCart]);
 
   const handleProductClick = (product: any) => {
     setSelectedProduct(product);
@@ -24,7 +34,8 @@ const ProductsCatalog: React.FC = () => {
 
   return (
     <>
-      <CategoriesBar/>
+    <NavLink to = {"cart"}>Cart</NavLink>
+      <CategoriesBar />
       <div className="products-catalog">
         {loading && (
           <div className="loading">
@@ -54,6 +65,9 @@ const ProductsCatalog: React.FC = () => {
           <ProductDialog
             product={selectedProduct}
             onClose={handleCloseDialog}
+            addToCart={(cartItem: { productId: string; amount: number }) =>
+              addToCart(cartItem.productId, cartItem.amount)
+            }
           />
         )}
       </div>

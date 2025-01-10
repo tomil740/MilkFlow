@@ -21,6 +21,7 @@ function useProducts(){
     setError(null);
 
     try {
+      
       // Step 2: Try fetching from local storage
       const cachedProducts = await getProductsFromLocalStorage(); // Wrapping in async for future flexibility
       if (cachedProducts.length > 0) {

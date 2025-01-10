@@ -1,7 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 import { RecoilRoot } from "recoil";
-import ThemeToggleBut from "./theme/ThemeToggleBut";
-import ProductsCatalog from "./features/productsCatalog/ProductsCatalog";
+import { router } from "./router/Router";
 
 
 
@@ -9,8 +8,7 @@ export default function MyApp() {
   return (
     <RecoilRoot>
       <>
-        <ThemeToggleBut />
-        <ProductsCatalog/>
+        <RouterProvider router={router} />
       </>
     </RecoilRoot>
   );
