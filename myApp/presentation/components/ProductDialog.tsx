@@ -2,37 +2,37 @@ import React, { useState } from "react";
 import Select from "react-select";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import "./style/productCatalog.css";
+import "../style/productCatalog.css";
+import useEditCart from "../../domain/util/useEditCart";
 
-interface CartItemref{
-  productId:string;
-  amount:number;
+interface CartItemRef {
+  productId: string;
+  amount: number;
 }
 
 interface ProductDialogProps {
   product: any;
   onClose: () => void;
-  addToCart: (item:CartItemref) => void;
+  isCartItem?: boolean; // Default to false
+  amountInit?:number;
+  addToCart: (item: CartItemRef) => void;
 }
 
 const ProductDialog: React.FC<ProductDialogProps> = ({
   product,
   onClose,
+  isCartItem = false,
+  amountInit = 1,
   addToCart,
 }) => {
-  const [amount, setAmount] = useState(1);
+  const [amount, setAmount] = useState(amountInit);
 
   const handleIncrease = () => setAmount((prev) => prev + 1);
   const handleDecrease = () => setAmount((prev) => Math.max(prev - 1, 1));
+  
+  const editCartItem = useEditCart()
 
-  // Values for the picker
   const values = [
-    { value: 1, label: "1" },
-    { value: 5, label: "5" },
-    { value: 10, label: "10" },
-    { value: 20, label: "20" },
-    { value: 50, label: "50" },
-    { value: 100, label: "100" },
     { value: 1, label: "1" },
     { value: 5, label: "5" },
     { value: 10, label: "10" },
@@ -45,15 +45,25 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
     setAmount(selectedOption.value);
   };
 
-  function onAddToCart(){
-    addToCart({productId:product?.id,amount:amount});
-    onClose()
-  }
+  const handleAddToCart = () => {
+    addToCart({ productId: product?.id, amount });
+    onClose();
+  };
+
+  function handleUpdateCart(toRemove:boolean){
+    if (isCartItem) {
+      if(toRemove){
+        editCartItem({ productId: product?.id, amount: -1 });
+      }else{
+        editCartItem({ productId: product?.id, amount });
+      }
+    }
+    onClose();
+  };
 
   return (
     <div className="product-dialog-overlay" onClick={onClose}>
       <div className="product-dialog" onClick={(e) => e.stopPropagation()}>
-        {/* Close button */}
         <IconButton onClick={onClose} className="product-dialog-close-btn">
           <CloseIcon />
         </IconButton>
@@ -68,7 +78,6 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
           <p className="product-dialog-price">{product.price} ₪</p>
         </div>
 
-        {/* Adjust the + and - buttons */}
         <div className="amount-picker">
           <button onClick={handleDecrease}>-</button>
           <Select
@@ -80,10 +89,21 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
           <button onClick={handleIncrease}>+</button>
         </div>
 
-        {/* Add to cart action button */}
-        <button className="product-dialog-action" onClick={onAddToCart}>
-          הוסף לסל
-        </button>
+        {/* Conditional rendering for action buttons */}
+        {!isCartItem ? (
+          <button className="product-dialog-action" onClick={handleAddToCart}>
+            הוסף לסל
+          </button>
+        ) : (
+          <div className="cart-item-actions">
+            <button className="update-cart-button" onClick={()=>handleUpdateCart(false)}>
+              עדכן
+            </button>
+            <button className="remove-cart-button" onClick={()=>handleUpdateCart(true)}>
+              הוסר
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

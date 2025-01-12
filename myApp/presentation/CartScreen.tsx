@@ -1,19 +1,21 @@
-import React from "react";
-import { useCart } from "../../domain/useCase/useCart";
+import {useState} from "react";
 import { useRecoilValue } from "recoil";
-import { cartProductsSelector, cartState } from "../../domain/states/cartState";
+import { cartProductsSelector, cartState } from "../domain/states/cartState";
 import "./style/cart.css";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import { Product } from '../domain/models/Product';
+import ProductDialog from "./components/ProductDialog";
 
 
 
 const CartScreen: React.FC = () => {
-  const { syncCart, clearCart } = useCart();
   const cartProducts = useRecoilValue(cartProductsSelector);
-  //test
-  const myCart = useRecoilValue(cartState)
-  console.log("mycart in sync",myCart)
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-
+  const handleCloseDialog = () => {
+    setSelectedProduct(null);
+  };
 
   const totalItems = cartProducts.reduce((sum, p) => sum + p.amount, 0);
   const totalPrice = cartProducts.reduce(
@@ -24,7 +26,6 @@ const CartScreen: React.FC = () => {
   const handleCheckout = () => {
     // Trigger checkout action
     console.log("Checkout initiated!");
-    syncCart();
   };
 
   return (
@@ -34,6 +35,15 @@ const CartScreen: React.FC = () => {
       <div className="cart-products">
         {cartProducts.map((product) => (
           <div key={product.id} className="cart-product">
+            {/* Edit Icon Button */}
+            <IconButton
+              className="edit-cart-item-btn"
+              onClick={() => setSelectedProduct(product)}
+            >
+              <EditIcon />
+            </IconButton>
+
+            {/* Product Details */}
             <img
               src={product.imgUrl}
               alt={product.name}
@@ -51,6 +61,15 @@ const CartScreen: React.FC = () => {
           </div>
         ))}
       </div>
+      {selectedProduct && (
+        <ProductDialog
+          product={selectedProduct}
+          onClose={handleCloseDialog}
+          addToCart={()=>{}}
+          isCartItem={true}
+          amountInit={selectedProduct.amount}
+        />
+      )}
 
       <div className="cart-summary">
         <div>Total Items: {totalItems}</div>

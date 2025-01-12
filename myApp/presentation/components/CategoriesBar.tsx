@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
 import { AllCategories } from "../../domain/core/AllCategories";
 import { selectedCategoryState } from "../../domain/states/productsState";
-import "./style/productCatalog.css";
+import "../style/productCatalog.css";
 
 function CategoriesBar() {
   const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);

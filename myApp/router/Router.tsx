@@ -1,8 +1,7 @@
-import { createBrowserRouter } from "react-router-dom"
-import ProductsCatalog from "../features/productsCatalog/ProductsCatalog"
+import { createBrowserRouter } from "react-router-dom";
+import ProductsCatalog from "../presentation/ProductsCatalog";
 import RootLayout from "./RootLayout";
-import CartScreen from "../features/cart/CartScreen";
-
+import CartScreen from "../presentation/CartScreen";
 
 export const router = createBrowserRouter([
   {

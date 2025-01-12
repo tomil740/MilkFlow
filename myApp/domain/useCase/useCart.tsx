@@ -1,61 +1,66 @@
-import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { cartState } from "../states/cartState";
-
-
+import { fetchCartData } from "../../data/remoteDao/fetchCartData";
+import { syncToRemoteCart } from "../../data/remoteDao/syncToRemoteCart";
 
 export const useCart = () => {
   const [cart, setCart] = useRecoilState(cartState);
-  // Initialize cart from local storage
-  useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    console.log("syncCartState init",savedCart)
-    setCart(savedCart);
-  }, [setCart]);
 
-  // Sync cart to local storage
-  const syncCart = () => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  };
+  const initializeCart = async (userId: string | null) => {
+    if (!userId) {
+      console.log("User not authenticated. Cart feature disabled.");
+      setCart([]); // Reset state for unauthenticated users
+      return;
+    }
 
-  const addToCart = (productId, amount = 1) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.productId === productId);
-      if (existing) {
-        return prevCart.map((item) =>
-          item.productId === productId
-            ? { ...item, amount: item.amount + amount }
-            : item
-        );
+    const localStorageKey = `cart_${userId}`;
+    try {
+      // Attempt to load cart from local storage
+      const localCart = JSON.parse(
+        localStorage.getItem(localStorageKey) || "null"
+      );
+
+      if (localCart) {
+        setCart(localCart); // Sync state with local storage
+        console.log("Cart loaded from local storage for user:", userId);
+      } else {
+        // No local data, fallback to remote cart
+        const remoteCart = await fetchCartData(userId);
+        setCart(remoteCart || []); // Sync state
+        localStorage.setItem(localStorageKey, JSON.stringify(remoteCart || [])); // Save remote cart locally
+        console.log("Cart loaded from Firebase for user:", userId);
       }
-      return [...prevCart, { productId, amount }];
-    });
+    } catch (error) {
+      console.error("Error initializing cart for user:", userId, error);
+      setCart([]); // Fallback to empty state
+    }
   };
 
-  const updateCartItem = (productId, amount) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.productId === productId ? { ...item, amount } : item
-      )
-    );
+  const syncCartToRemote = async (userId: string) => {
+    const localStorageKey = `cart_${userId}`;
+    try {
+      if (!userId) throw new Error("No user ID available for sync.");
+      await syncToRemoteCart(userId, cart);
+      console.log("Cart successfully synced to remote.");
+      localStorage.setItem(localStorageKey, JSON.stringify(cart)); // Save synced cart locally
+    } catch (error) {
+      console.error("Error syncing cart to remote:", error);
+    }
   };
 
-  const removeFromCart = (productId) => {
-    setCart((prevCart) =>
-      prevCart.filter((item) => item.productId !== productId)
-    );
+  const clearCart = async (userId: string) => {
+    const localStorageKey = `cart_${userId}`;
+    try {
+      setCart([]); // Clear state
+      localStorage.removeItem(localStorageKey); // Remove local cart
+      if (userId) {
+        await syncToRemoteCart(userId, []); // Clear remote cart
+        console.log("Cart successfully cleared for user:", userId);
+      }
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
   };
 
-  const clearCart = () => {
-    setCart([]);
-  };
-
-  return {
-    cart,
-    addToCart,
-    updateCartItem,
-    removeFromCart,
-    clearCart,
-    syncCart,
-  };
+  return { cart, initializeCart, syncCartToRemote, clearCart };
 };

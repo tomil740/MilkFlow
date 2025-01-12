@@ -1,14 +1,28 @@
 import { atom, selector } from "recoil";
+import { syncEffect } from "recoil-sync";
 import { productsState } from "./productsState";
 import { Product } from '../models/Product';
 import { CartItem } from '../models/CartItem';
+import { CartProductItem } from '../models/CartProductItem';
+import {
+  getFromLocalStorage,
+  setToLocalStorage,
+} from "../../data/localCacheDao/localStorageDao";
 
+//todo : on auth should set the global state for the authinticated id to sync here as well
+const localStorageKey = "cart_fAHk3bhvX8yPRdTlS4zk";
 
-
-// Cart atom for global state
 export const cartState = atom<CartItem[]>({
   key: "cartState",
-  default: [], // Array of CartItem
+  default: getFromLocalStorage(localStorageKey), // Default to products from localStorage or empty array
+    effects_UNSTABLE: [
+      ({ onSet }) => {
+        // Save to localStorage whenever productsState changes
+        onSet((newState) => {
+          setToLocalStorage(localStorageKey, newState);
+        });
+      },
+    ],
 });
 
 // Selector for pulling detailed product data
@@ -17,9 +31,7 @@ export const cartProductsSelector = selector({
   get: ({ get }) => {
     const cart = get(cartState);
     const products = get(productsState);
-    console.log("MyCart cartRef",cart)
-    console.log("cartRef my products",products)
-    
+
     return cart
       .map((item) => {
         const product = products.find((p) => p.id === item.productId);

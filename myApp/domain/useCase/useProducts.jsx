@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { filteredProductsState, productsState } from "../states/productsState";
-import {
-  getProductsFromLocalStorage,
-  setProductsToLocalStorage,
-} from "../../data/localCacheDao/localStorageDao";
 import { fetchProductsFromFirestore } from "../../data/remoteDao/fetchProductsFromFirestore";
 
 function useProducts(){
@@ -21,18 +17,9 @@ function useProducts(){
     setError(null);
 
     try {
-      
-      // Step 2: Try fetching from local storage
-      const cachedProducts = await getProductsFromLocalStorage(); // Wrapping in async for future flexibility
-      if (cachedProducts.length > 0) {
-        setProducts(cachedProducts);
-        return cachedProducts;
-      }
-
       // Step 3: Fetch from Firestore
       const firestoreProducts = await fetchProductsFromFirestore();
       setProducts(firestoreProducts);
-      await setProductsToLocalStorage(firestoreProducts); // Update local storage
       return firestoreProducts;
     } catch (err) {
       setError(err.message || "An error occurred");

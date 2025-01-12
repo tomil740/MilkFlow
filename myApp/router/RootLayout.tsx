@@ -1,10 +1,11 @@
 import { Outlet } from "react-router-dom";
 import ThemeToggleBut from "../theme/ThemeToggleBut";
+import TopBar from "../presentation/components/TopBar";
 
 const RootLayout = () => {
   return (
     <div className="flex min-h-dvh flex-col">
-      <ThemeToggleBut />
+      <TopBar />
       <main className="flex-grow">
         <Outlet />
       </main>

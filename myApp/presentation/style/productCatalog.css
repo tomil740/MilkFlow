@@ -1,7 +1,9 @@
 body{
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
   background-color: var(--color-surface);
-   border-radius: 12px;
-
+  color: var(--on-surface-color);
+  border-radius: 12px;
 }
 
 /* ProductsCatalog Styles */
@@ -170,7 +172,8 @@ body{
   margin: 0 12px;
   font-size: 16px;
 }
-
+.remove-cart-button,
+.update-cart-button ,
 .product-dialog-action {
   background-color: var(--color-primary);
   color: var(--color-on-primary);
@@ -186,6 +189,32 @@ body{
 .product-dialog-action:hover {
   background-color: var(--color-primary-container);
   box-shadow: 0 4px 8px var(--color-shadow);
+}
+
+.cart-item-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.update-cart-button {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.update-cart-button:hover {
+  background-color: var(--color-on-primary);
+  color: var(--color-primary);
+}
+
+.remove-cart-button {
+  background-color: var(--color-error);
+  color: var(--color-on-error);
+}
+
+.remove-cart-button:hover {
+   color: var(--color-error);
+   background-color: var(--color-on-error);
 }
 
 /* Amount Picker Custom Styles */

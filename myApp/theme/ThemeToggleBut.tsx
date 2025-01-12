@@ -4,9 +4,12 @@ import { useTheme } from "./useTheme";
 const ThemeToggleBut = () => {
   const { theme, toggleTheme } = useTheme();
 
-  return ( 
-    <button onClick={toggleTheme}>
-      Switch to {theme === "light" ? "Dark" : "Light"} Theme
+  return (
+    <button
+      onClick={toggleTheme}
+      className="themeBut"
+    >
+      {theme =="light" ? "🌙" : "☀️"}
     </button>
   );
 };
