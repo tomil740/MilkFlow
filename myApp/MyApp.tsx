@@ -1,15 +1,15 @@
 import { RouterProvider } from "react-router-dom";
 import { RecoilRoot } from "recoil";
-import ThemeToggleBut from "./theme/ThemeToggleBut";
+import { router } from "./router/Router";
+
 
 
 export default function MyApp() {
   return (
     <RecoilRoot>
       <>
-        <ThemeToggleBut/>
-        <h1>Hello world </h1>
+        <RouterProvider router={router} />
       </>
-    </RecoilRoot> 
+    </RecoilRoot>
   );
 }

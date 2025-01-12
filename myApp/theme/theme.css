@@ -1,7 +1,11 @@
 /* Light Theme */
-h1{
-  color: var(--color-primary);
+.themeBut{
+  background: var(--color-surface-variant);
+  font-size: 2ch;
+  border: none;
+  margin: 0 10px;
 }
+
 :root {
   --color-primary: rgb(93 87 145);
   --color-surface-tint: rgb(93 87 145);
