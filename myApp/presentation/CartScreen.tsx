@@ -4,7 +4,6 @@ import { cartProductsSelector, cartState } from "../domain/states/cartState";
 import "./style/cart.css";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
-import { Product } from '../domain/models/Product';
 import ProductDialog from "./components/ProductDialog";
 
 
@@ -17,7 +16,7 @@ const CartScreen: React.FC = () => {
     setSelectedProduct(null);
   };
 
-  const totalItems = cartProducts.reduce((sum, p) => sum + p.amount, 0);
+  const totalItems = cartProducts.length//reduce((sum, p) => sum + p.amount, 0);
   const totalPrice = cartProducts.reduce(
     (sum, p) => sum + p.price * p.amount,
     0

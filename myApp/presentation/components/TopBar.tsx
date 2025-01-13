@@ -3,12 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../domain/useCase/useCart";
 import "../style/TopBar.css";
 import ThemeToggleBut from "../../theme/ThemeToggleBut";
+import { useRecoilState } from "recoil";
+import { authState } from "../../domain/states/authState";
+import UserHeader from "./UserHeader";
 
-const authUserId = "fAHk3bhvX8yPRdTlS4zk"; // Mock authenticated user ID for now
+
+//const authUserId = "fAHk3bhvX8yPRdTlS4zk"; // Mock authenticated user ID for now
  
 const TopBar = () => {
   const navigate = useNavigate();
-  const [authUser, setAuthUser] = useState(true); // Replace with useRecoilState(authState) when ready
+  const [authUser,setAuthUser] = useRecoilState(authState)
   const { cart, initializeCart, syncCartToRemote, clearCart } = useCart();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -16,23 +20,23 @@ const TopBar = () => {
   useEffect(() => {
     const initialize = async () => {
       if (authUser) {
-        await initializeCart(authUserId);
+        await initializeCart(authUser.uid);
       } else {
-        clearCart(authUserId); // Clear cart if user logs out
+       // clearCart(authUserId); // Clear cart if user logs out
       }
     };
     initialize();
   }, [authUser]);
 
   const handleSaveCart = async () => {
-    if (!authUserId) {
+    if (!authUser) {
       console.log("User not authenticated. Cannot save cart.");
       return;
     }
 
-    setIsSaving(true);
+    setIsSaving(true); 
     try {
-      await syncCartToRemote(authUserId);
+      await syncCartToRemote(authUser?.uid);
     } catch (error) {
       console.error("Error saving cart:", error);
     } finally {
@@ -41,7 +45,7 @@ const TopBar = () => {
   };
 
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/Login");
   };
 
   const handleLogout = () => {
@@ -50,14 +54,14 @@ const TopBar = () => {
 
   return (
     <div className="top-bar">
-      <div className="logo">
+      <div className="logo" onClick={() => navigate("/")}>
         🛍️
-        <ThemeToggleBut />
       </div>
-
+      <ThemeToggleBut />
       {authUser ? (
         <div className="auth-container">
-          <span className="user-name">Hello, {"Tomi"}!</span>
+          <UserHeader userId={authUser?.uid} />
+
           <div
             className={`save-cart-icon ${isSaving ? "saving" : ""}`}
             onClick={handleSaveCart}
