@@ -76,3 +76,43 @@
   width: calc(100% - 2rem);
   left: 1rem;
 }
+
+
+
+
+
+
+
+
+
+/* Snackbar feedback styles */
+.snackbar-error {
+  background-color: var(--color-error);
+  color: var(--color-on-error);
+}
+
+.snackbar-success {
+  background-color: var(--color-tertiary);
+  color: var(--color-on-tertiary);
+}
+
+/* Loading Dialog */
+.loading-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1000; /* Ensure it overlays everything */
+  flex-direction: column;
+  color: var(--color-on-surface);
+}
+
+.loading-text {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+}

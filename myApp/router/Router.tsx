@@ -4,6 +4,8 @@ import RootLayout from "./RootLayout";
 import CartScreen from "../presentation/CartScreen";
 import LoginPage from "../presentation/LoginPage";
 import RegisterPage from "../presentation/RegisterPage";
+import DemandsView from "../presentation/DemandsView";
+
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: "/Register",
         element: <RegisterPage />,
+      },
+      {
+        path: "/DemandsView",
+        element: <DemandsView />,
       },
     ],
   },

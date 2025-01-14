@@ -79,6 +79,10 @@ const TopBar = () => {
           <button className="logout-button" onClick={handleLogout}>
             Logout
           </button>
+
+          <div className="logo" onClick={() => navigate("/demandsView")}>
+            📋
+          </div>
         </div>
       ) : (
         <button className="login-button" onClick={handleLogin}>
