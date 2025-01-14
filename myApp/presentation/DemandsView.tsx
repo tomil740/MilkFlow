@@ -7,16 +7,17 @@ import { authState } from "../domain/states/authState";
 import DemandPreviewItem from "./components/DemandPreviewItem";
 import "./style/demandsFeature.css";
 import { DemandsProductView } from './components/DemandsProductView';
+import TwoWaySwitch from "./components/TwoWaySwitch";
+
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
   const [status, setStatus] = useState("pending"); // Default status
+  const [productView, setProductView] = useState(true);
 
   const isAuthenticated = userAuth !== null;
   const userId = isAuthenticated
-    ? userAuth.isDistributer
       ? userAuth.uid
-      : userAuth.distributerId
     : "-1"; // Fake ID to indicate unauthenticated user
 
   const { data, loading, error, updateStatus } = useDemandsView(
@@ -104,16 +105,28 @@ const DemandsView = () => {
       )}
 
       <div className="demands-list">
-        <DemandsProductView demands={data}/>
-        {data.map((demand) => (
-          <DemandPreviewItem
-            key={demand.demandId}
-            uid={userAuth?.isDistributer ? demand.userId : demand.distributerId}
-            amount={demand.products.length}
-            lastUpdate={demand.updatedAt}
-            status={demand.status}
-          />
-        ))}
+        <div className="switchContainer">
+          <TwoWaySwitch value={productView} onChange={setProductView} />
+        </div>
+
+        {/* Conditional Rendering */}
+        {productView ? (
+          <DemandsProductView demands={data} />
+        ) : (
+          <div className="demands-list">
+            {data.map((demand) => (
+              <DemandPreviewItem
+                key={demand.demandId}
+                uid={
+                  userAuth?.isDistributer ? demand.userId : demand.distributerId
+                }
+                amount={demand.products.length}
+                lastUpdate={demand.updatedAt}
+                status={demand.status}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {userAuth?.isDistributer && status !== "completed" && (

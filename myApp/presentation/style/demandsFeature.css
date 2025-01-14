@@ -1,5 +1,6 @@
 .demands-view-container {
   padding: 1rem;
+
 }
 
 .demands-header {
@@ -73,6 +74,7 @@
 }
 
 /* Product Image */
+.demands-product-item
 .product-image {
   width: 48px;
   height: 48px;
