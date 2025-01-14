@@ -50,3 +50,82 @@
   padding: 1rem;
   border-radius: 8px;
 }
+
+
+/* Root container */
+.demands-product-item {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  margin: 8px 0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-outline);
+  border-radius: 8px;
+  box-shadow: var(Black);
+}
+
+/* Product Row */
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* Product Image */
+.product-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: cover;
+  background-color: var(--color-surface-variant);
+}
+
+/* Product Info */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-on-surface);
+}
+
+.product-id {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+}
+
+/* Total Amount */
+.total-amount {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 12px 0;
+  color: var(--color-primary);
+}
+
+/* User Description */
+.user-description {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* User Row */
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  background-color: var(--color-surface-variant);
+  border-radius: 8px;
+}
+
+/* User Amount */
+.user-amount {
+  font-size: 14px;
+  color: var(--color-on-surface);
+}

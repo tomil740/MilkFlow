@@ -9,7 +9,7 @@ function useProducts(){
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-
+ 
   const fetchProducts = async () => {
     if (products.length > 0) return products; // Step 1: Use Recoil state if available
 

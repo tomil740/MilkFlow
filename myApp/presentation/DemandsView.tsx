@@ -6,6 +6,7 @@ import { useRecoilValue } from "recoil";
 import { authState } from "../domain/states/authState";
 import DemandPreviewItem from "./components/DemandPreviewItem";
 import "./style/demandsFeature.css";
+import { DemandsProductView } from './components/DemandsProductView';
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
@@ -103,6 +104,7 @@ const DemandsView = () => {
       )}
 
       <div className="demands-list">
+        <DemandsProductView demands={data}/>
         {data.map((demand) => (
           <DemandPreviewItem
             key={demand.demandId}

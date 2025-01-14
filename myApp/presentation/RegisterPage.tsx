@@ -39,13 +39,10 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const newUser = {
-      email,
-      password,
-      name,
-      imageUrl,
-      distributerId: distributerPick,
-    };
+   
+
+    const imageUrl =
+      "https://wallpapers.com/images/featured/cool-profile-picture-87h46gcobjl5e4xu.jpg";
 
     await register(
       email,
