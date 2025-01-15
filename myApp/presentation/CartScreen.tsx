@@ -6,14 +6,20 @@ import { cartProductsSelector, cartState } from "../domain/states/cartState";
 import "./style/cart.css";
 import { useCreateDemand } from "../domain/useCase/useCreateDemand";
 import ProductDialog from "./components/ProductDialog";
+import { useCart } from "../domain/useCase/useCart";
+import { authState } from "../domain/states/authState";
 
 
 
-const CartScreen: React.FC = () => {
+
+const CartScreen: React.FC = () => { 
   const { createDemand, loading, error, data } = useCreateDemand();
   const cartProducts = useRecoilValue(cartProductsSelector);
+  const authUser = useRecoilValue(authState);
   const setCartState = useRecoilState(cartState)[1];
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const {syncCartToRemote, clearCart } = useCart();
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -22,6 +28,37 @@ const CartScreen: React.FC = () => {
   const [showLoadingDialog, setShowLoadingDialog] = useState(false);
 
   const handleCloseDialog = () => setSelectedProduct(null);
+
+  const handleSaveCart = async () => {
+    if (!authUser) {
+      setSnackbar({
+        open: true,
+        message: "User not authenticated. Cannot save cart.",
+        type: "error",
+      });
+      console.log("User not authenticated. Cannot save cart.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await syncCartToRemote(authUser?.uid);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: `Error saving cart:${error}`,
+        type: "error",
+      });
+      console.error("Error saving cart:", error);
+    } finally {
+      setSnackbar({
+        open: true,
+        message: `successfuly saved cart`,
+        type: "success",
+      });
+      setIsSaving(false);
+    }
+  };
 
   const totalItems = cartProducts.length;
   const totalPrice = cartProducts.reduce(
@@ -72,8 +109,16 @@ const CartScreen: React.FC = () => {
 
   return (
     <div className="cart-container">
-      <header className="cart-header">Cart</header>
-
+      <div className="cart-header-container">
+        <header className="cart-header">Cart</header>
+        <div
+          className={`save-cart-icon ${isSaving ? "saving" : ""}`}
+          onClick={!isSaving ? handleSaveCart : null} // Disable click when saving
+          title="Save Cart"
+        >
+          {isSaving ? "⏳" : "💾"} {/* Spinner or save icon */}
+        </div>
+      </div>
       <div className="cart-products">
         {cartProducts.map((product) => (
           <div key={product.id} className="cart-product">

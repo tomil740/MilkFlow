@@ -148,7 +148,7 @@ const DemandItemPage: React.FC = () => {
 
       <Snackbar
         open={Boolean(snackMessage)}
-        autoHideDuration={6000}
+        autoHideDuration={2000}
         onClose={() => setSnackMessage(null)}
       >
         <Alert severity={snackSeverity} onClose={() => setSnackMessage(null)}>
@@ -156,7 +156,7 @@ const DemandItemPage: React.FC = () => {
         </Alert>
       </Snackbar>
 
-      {auth.isDistributer && demand.status !== "completed" && (
+      {auth?.isDistributer && demand.status !== "completed" && (
         <div className="update-status-button-Container">
           <Button
             variant="contained"

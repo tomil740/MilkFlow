@@ -1,5 +1,68 @@
 
 
+
+.top-bar-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Buttons and Icons */
+.nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.nav-button:hover {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.nav-button.active {
+  background-color: var(--color-secondary);
+  color: var(--color-on-secondary);
+}
+
+.icon-button {
+  font-size: 1.2rem;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: var(--color-surface-variant);
+  color: var(--color-on-surface);
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.icon-button:hover {
+  transform: scale(1.1);
+  background-color: var(--color-secondary);
+  color: var(--color-on-secondary);
+}
+
+.icon-button.active {
+  box-shadow: inset 0 0 0 2px var(--color-secondary);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .top-bar {
+    padding: 16px 32px;
+  }
+
+  .icon-button {
+    font-size: 1.5rem;
+  }
+}
+
+
 /* TopBar Styles */
 .top-bar {
   display: flex;
@@ -26,30 +89,6 @@
 .user-name {
   font-size: 1rem;
   font-weight: 500;
-}
-
-.cart-icon,
-.save-cart-icon {
-  cursor: pointer;
-  font-size: 1.2rem;
-  background-color: var(--secondary-color);
-  color: var(--on-secondary-color);
-  padding: 8px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
-}
-
-.cart-icon:hover,
-.save-cart-icon:hover {
-  transform: scale(1.1);
-  background-color: #02c7b5;
-}
-
-.save-cart-icon.saving {
-  animation: spin 1s linear infinite;
 }
 
 /* Loading Dialog Styles */
@@ -118,11 +157,6 @@
 
   .logo {
     font-size: 1.5rem;
-  }
-
-  .cart-icon,
-  .save-cart-icon {
-    font-size: 1.4rem;
   }
   .login-button {
     font-size: 1.1rem;

@@ -1,94 +1,82 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../../domain/useCase/useCart";
-import "../style/TopBar.css";
-import ThemeToggleBut from "../../theme/ThemeToggleBut";
 import { useRecoilState } from "recoil";
 import { authState } from "../../domain/states/authState";
+import { useCart } from "../../domain/useCase/useCart";
+import ThemeToggleBut from "../../theme/ThemeToggleBut";
 import UserHeader from "./UserHeader";
+import "../style/TopBar.css";
 
-
-//const authUserId = "fAHk3bhvX8yPRdTlS4zk"; // Mock authenticated user ID for now
- 
 const TopBar = () => {
   const navigate = useNavigate();
-  const [authUser,setAuthUser] = useRecoilState(authState)
-  const { cart, initializeCart, syncCartToRemote, clearCart } = useCart();
-  const [isSaving, setIsSaving] = useState(false);
+  const [authUser, setAuthUser] = useRecoilState(authState);
+  const { cart, initializeCart } = useCart();
 
-  // Initialize cart when user logs in
+
   useEffect(() => {
     const initialize = async () => {
-      if (authUser) {
-        await initializeCart(authUser.uid);
-      } else {
-       // clearCart(authUserId); // Clear cart if user logs out
-      }
+      if (authUser) await initializeCart(authUser.uid);
     };
     initialize();
   }, [authUser]);
 
-  const handleSaveCart = async () => {
-    if (!authUser) {
-      console.log("User not authenticated. Cannot save cart.");
-      return;
-    }
-
-    setIsSaving(true); 
+  const handleNavigation = (path:string) => {
     try {
-      await syncCartToRemote(authUser?.uid);
-    } catch (error) {
-      console.error("Error saving cart:", error);
-    } finally {
-      setIsSaving(false);
+      navigate(path);
+    } catch (err) {
+      console.error("Navigation error:", err);
+      alert("Navigation unavailable.");
     }
-  };
-
-  const handleLogin = () => {
-    navigate("/Login");
-  };
-
-  const handleLogout = () => {
-    setAuthUser(null); // Simulate logout
   };
 
   return (
     <div className="top-bar">
-      <div className="logo" onClick={() => navigate("/")}>
-        🛍️
-      </div>
-      <ThemeToggleBut />
-      {authUser ? (
-        <div className="auth-container">
-          <UserHeader userId={authUser?.uid} />
-
-          <div
-            className={`save-cart-icon ${isSaving ? "saving" : ""}`}
-            onClick={handleSaveCart}
-            title="Save Cart"
-          >
-            {isSaving ? "⏳" : "💾"} {/* Spinner or save icon */}
-          </div>
-          <div
-            className="cart-icon"
-            onClick={() => navigate("/cart")}
-            title="Go to cart"
-          >
-            🛒 ({cart.length || 0})
-          </div>
-          <button className="logout-button" onClick={handleLogout}>
-            Logout
-          </button>
-
-          <div className="logo" onClick={() => navigate("/demandsView")}>
-            📋
-          </div>
+      {/* Left Section */}
+      <div className="top-bar-section">
+        <div
+          className="icon-button"
+          onClick={() => handleNavigation("/")}
+          title="ProductsCatalog"
+        >
+          🛍️
         </div>
-      ) : (
-        <button className="login-button" onClick={handleLogin}>
-          Login
-        </button>
-      )}
+        <ThemeToggleBut />
+      </div>
+
+      {/* Right Section */}
+      <div className="top-bar-section">
+        {!authUser ? (
+          <button
+            className="nav-button"
+            onClick={() => handleNavigation("/login")}
+          >
+            Login
+          </button>
+        ) : (
+          <>
+            <UserHeader userId={authUser.uid} />
+            {!authUser.isDistributer && (
+              <div
+                className="icon-button"
+                onClick={() => handleNavigation("/cart")}
+                title="Go to Cart"
+              >
+                🛒 ({cart?.length || 0})
+              </div>
+            )}
+            <button className="nav-button" onClick={() => setAuthUser(null)}>
+              Logout
+            </button>
+            <div
+              className="icon-button"
+              onClick={() => handleNavigation("/demandsView")}
+              title="Demand Manager"
+            >
+              📋
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
