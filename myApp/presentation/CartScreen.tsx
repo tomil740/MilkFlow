@@ -8,8 +8,7 @@ import { useCreateDemand } from "../domain/useCase/useCreateDemand";
 import ProductDialog from "./components/ProductDialog";
 import { useCart } from "../domain/useCase/useCart";
 import { authState } from "../domain/states/authState";
-import { Product } from '../domain/models/Product';
-import { CartProductItem } from "../domain/models/CartProductItem";
+import { ProductWithAmount } from '../domain/models/Product';
 
 
 
@@ -20,12 +19,12 @@ const CartScreen: React.FC = () => {
   const cartProducts = useRecoilValue(cartProductsSelector);
   const authUser = useRecoilValue(authState);
   const setCartState = useRecoilState(cartState)[1];
-  const [selectedProduct, setSelectedProduct]= useState<CartProductItem|null> (null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductWithAmount | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const {syncCartToRemote, clearCart } = useCart();
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: "",
+    message: "", 
     type: "",
   });
   const [showLoadingDialog, setShowLoadingDialog] = useState(false);
@@ -134,7 +133,7 @@ const CartScreen: React.FC = () => {
           <div key={product.id} className="cart-product">
             <button
               className="edit-cart-item-btn"
-              onClick={() => setSelectedProduct({product,amount:1})}
+              onClick={() => setSelectedProduct(product)} 
             >
               ✎
             </button>
@@ -155,7 +154,7 @@ const CartScreen: React.FC = () => {
           </div>
         ))}
       </div>
-      {selectedProduct && (
+      {selectedProduct && ( 
         <ProductDialog
           product={selectedProduct}
           onClose={handleCloseDialog}
