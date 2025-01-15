@@ -19,6 +19,9 @@ import { Product } from "../domain/models/Product";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUpdateDemandStatus } from "../domain/useCase/useUpdateDemandStatus";
 import "./style/demandItemPage.css";
+import { Demand } from '../domain/models/Demand';
+import { DatePresentation } from "./components/DatePresentation";
+
 
 const DemandItemPage: React.FC = () => {
   const location = useLocation();
@@ -27,8 +30,8 @@ const DemandItemPage: React.FC = () => {
 
   const [snackMessage, setSnackMessage] = useState<string | null>(null);
   const [snackSeverity, setSnackSeverity] = useState<"success" | "error">();
-
-  const { demand } = location.state || {};
+ 
+  const { demand } = location.state as { demand: Demand };
   const { products, fetchProducts, loading: productsLoading } = useProducts();
   const [cartProducts, setCartProducts] = useState<
     (Product & { amount: number })[]
@@ -99,20 +102,13 @@ const DemandItemPage: React.FC = () => {
               {demand.status.charAt(0).toUpperCase() + demand.status.slice(1)}
             </Typography>
             <div className="user-details-row">
-              <UserHeader userId={demand.userId} label="Customer" />
+              <UserHeader userId={demand.userId} />
               {demand.distributerId && (
-                <UserHeader userId={demand.distributerId} label="Distributor" />
+                <UserHeader userId={demand.distributerId} />
               )}
             </div>
           </div>
-          <Typography variant="body2">
-            Created:{" "}
-            {new Date(demand.createdAt.seconds * 1000).toLocaleString()}
-          </Typography>
-          <Typography variant="body2">
-            Updated:{" "}
-            {new Date(demand.updatedAt.seconds * 1000).toLocaleString()}
-          </Typography>
+          <DatePresentation createdAt={demand.createdAt} updatedAt={demand.updatedAt}/>
         </CardContent>
       </Card>
 
@@ -175,3 +171,6 @@ const DemandItemPage: React.FC = () => {
 };
 
 export default DemandItemPage;
+
+
+

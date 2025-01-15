@@ -1,5 +1,6 @@
 import { db } from "../../backEnd/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import { CartItem } from '../../domain/models/CartItem';
 
 export async function fetchCartData(userId: string): Promise<CartItem[]> {
   try {

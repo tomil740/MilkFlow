@@ -1,5 +1,7 @@
 import { db } from "../../backEnd/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
+import { CartItem } from '../../domain/models/CartItem';
+
 
 export const syncToRemoteCart = async (userId: string, cart: CartItem[]) => {
   try {

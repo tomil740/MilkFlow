@@ -1,3 +1,4 @@
+/*
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../backEnd/firebaseConfig";
 
@@ -5,6 +6,7 @@ import { db } from "../backEnd/firebaseConfig";
  * Add or update a list of products in the Firestore collection.
  * @param {Array<Object>} products - Array of product objects to add/update.
  */
+/*
 export const upsertProducts = async (products) => {
   try {
     const promises = products.map((product) => {
@@ -104,4 +106,6 @@ export async function uploadProducts1(){
     console.error("Error uploading products:", error);
   }
 };
+*/
+
 

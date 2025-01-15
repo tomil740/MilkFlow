@@ -33,14 +33,16 @@ export const useCreateDemand = () => {
       if (!cartItems || cartItems.length === 0) {
         throw new Error("Cart is empty.");
       }
+      const defaultDate = new Date(0); // Unix epoch as a placeholder
 
       // Build demand object
       const demand: Demand = {
+        demandId:"",
         userId: userAuth.uid,
         distributerId: userAuth.distributerId,
         status: "pending",
-        createdAt: null, // Will be set by Firebase
-        updatedAt: null, // Will be set by Firebase
+        createdAt: defaultDate, // Will be set by Firebase
+        updatedAt: defaultDate, // Will be set by Firebase
         products: cartItems,
       };
 
@@ -50,7 +52,11 @@ export const useCreateDemand = () => {
       // Update state
       setData(demand);
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message); // Now TypeScript knows `err` is an `Error` type
+      } else {
+        setError("An unknown error occurred.");
+      }
     } finally {
       setLoading(false);
       setTimeout(()=>setError(null), 1000);

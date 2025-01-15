@@ -10,6 +10,8 @@ import { DemandsProductView } from "./components/DemandsProductView";
 import TwoWaySwitch from "./components/TwoWaySwitch";
 import { Demand } from "../domain/models/Demand";
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
+
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
@@ -116,18 +118,28 @@ const DemandsView = () => {
           <DemandsProductView demands={data} />
         ) : (
           <div className="demands-list">
-            {data.map((demand) => (
-              <DemandPreviewItem
-                key={demand.demandId}
-                uid={
-                  userAuth?.isDistributer ? demand.userId : demand.distributerId
-                }
-                amount={demand.products.length}
-                lastUpdate={demand.updatedAt}
-                status={demand.status}
-                onClick1={() => handleDemandClick(demand)} // Navigate to DemandItemPage
-              />
-            ))}
+            {!userAuth ? (
+              // Display this if userAuth is null
+              <Typography variant="h6">
+                Please authenticate to see the demand data.
+              </Typography>
+            ) : (
+              // Render the list of demands if userAuth is available
+              data.map((demand) => (
+                <DemandPreviewItem
+                  key={demand.demandId}
+                  uid={
+                    userAuth.isDistributer
+                      ? demand.userId
+                      : demand.distributerId!
+                  }
+                  amount={demand.products.length}
+                  lastUpdate={demand.updatedAt}
+                  status={demand.status}
+                  onClick1={() => handleDemandClick(demand)} // Navigate to DemandItemPage
+                />
+              ))
+            )}
           </div>
         )}
       </div>

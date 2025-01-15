@@ -15,7 +15,7 @@ export const useDemandsByProducts = (demands: Demand[]) => {
   useEffect(() => {
     const summarizeDemandsByProducts = async () => {
       try {
-        await fetchProducts()
+        await fetchProducts();
         // Step 1: Group demands by productId
         const groupedProducts: Record<string, SummarizedProduct> = {};
 
@@ -48,16 +48,21 @@ export const useDemandsByProducts = (demands: Demand[]) => {
               });
             }
           });
-        } 
+        }
 
         // Convert grouped data into an array
         const productsSummary = Object.values(groupedProducts);
 
         // Step 2: Fetch product details and enrich the data
-        const enrichedData = productsSummary.map((item) => ({ 
-          ...item,
-          product: products.find((p) => p.id === item.productId),
-        }));
+        const enrichedData = productsSummary.map((item) => {
+          const product = products.find((p) => p.id === item.productId);
+
+          // Type assertion that the product will be found or return undefined
+          return {
+            ...item,
+            product: product || undefined, // Ensure product is properly typed
+          } as SummarizedProduct; // Ensure the item is typed as SummarizedProduct
+        });
 
         // Step 3: Sort by total amount (newest first)
         enrichedData.sort((a, b) => b.amount - a.amount);

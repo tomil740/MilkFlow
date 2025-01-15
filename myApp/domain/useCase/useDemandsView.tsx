@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { observeDemands, updateDemandStatus } from "../../data/remoteDao/DemadnsView";
+import { observeDemands, updateDemandStatus } from "../../data/remoteDao/demadnsView";
 import { Demand } from '../models/Demand';
 
-
+ 
 export interface UseDemandsViewResult {
   data: Demand[];
   loading: boolean;

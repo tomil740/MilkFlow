@@ -9,16 +9,10 @@ import {
   FirestoreError,
 } from "firebase/firestore";
 import { db } from "../../backEnd/firebaseConfig";
+import { Demand } from '../../domain/models/Demand';
 
-// Define the Demand type
-export interface Demand {
-  id: string;
-  uid: string;
-  distributerId: string;
-  status: string;
-  items: number;
-  updatedAt: number; // Timestamp in milliseconds
-}
+
+
 
 /**
  * Fetch and observe demands from Firestore.

@@ -1,7 +1,18 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "react-jsx", // Updated for React 17+
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist", // Output directory for compiled files
+    "allowJs": false, // Disallow JS files
+    "resolveJsonModule": true, // Enable importing JSON if needed
+    "isolatedModules": true
+  },
+  "include": ["myApp", "vite-env.d.ts"], // Include source files and necessary type definitions
+  "exclude": ["node_modules", "dist"] // Exclude build and dependencies
 }

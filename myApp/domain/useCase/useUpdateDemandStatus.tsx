@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateDemandStatus } from "../../data/remoteDao/DemadnsView";
+import { updateDemandStatus } from "../../data/remoteDao/demadnsView";
 
 export interface UseUpdateDemandStatusResult {
   updating: boolean;

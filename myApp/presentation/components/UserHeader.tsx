@@ -1,5 +1,15 @@
 import useGetUserById from "../../domain/useCase/useGetUserById";
 
+const styles1 = {
+  profileImage: {
+    width: "50px", // Set your desired width
+    height: "50px", // Set your desired height
+    borderRadius: "50%", // If you want to make it circular
+    marginRight: "10px", // Example margin
+    objectFit: "cover" as "cover", // Explicitly cast 'cover' as 'cover' type
+  },
+};
+
 interface UserHeaderProps {
   userId: string;
 }
@@ -31,7 +41,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({ userId }) => {
       <img
         src={data.imageUrl}
         alt={data.name}
-        style={styles.profileImage}
+        style={styles1.profileImage}
         onError={(e) =>
           ((e.target as HTMLImageElement).src = "/placeholder.png")
         }

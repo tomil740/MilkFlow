@@ -6,7 +6,7 @@ import "../style/productCatalog.css";
 function CategoriesBar() {
   const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
 
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = (category:string) => {
      // Toggle selected category
      setSelectedCategory((prev) => (prev === category ? "" : category));
    };

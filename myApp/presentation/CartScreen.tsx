@@ -8,6 +8,9 @@ import { useCreateDemand } from "../domain/useCase/useCreateDemand";
 import ProductDialog from "./components/ProductDialog";
 import { useCart } from "../domain/useCase/useCart";
 import { authState } from "../domain/states/authState";
+import { Product } from '../domain/models/Product';
+import { CartProductItem } from "../domain/models/CartProductItem";
+
 
 
 
@@ -17,7 +20,7 @@ const CartScreen: React.FC = () => {
   const cartProducts = useRecoilValue(cartProductsSelector);
   const authUser = useRecoilValue(authState);
   const setCartState = useRecoilState(cartState)[1];
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct]= useState<CartProductItem|null> (null);
   const [isSaving, setIsSaving] = useState(false);
   const {syncCartToRemote, clearCart } = useCart();
   const [snackbar, setSnackbar] = useState({
@@ -38,6 +41,13 @@ const CartScreen: React.FC = () => {
       });
       console.log("User not authenticated. Cannot save cart.");
       return;
+    }else if(isSaving){
+      setSnackbar({
+        open: true,
+        message: "A save process is runing...",
+        type: "error",
+      });
+      return
     }
 
     setIsSaving(true);
@@ -113,7 +123,7 @@ const CartScreen: React.FC = () => {
         <header className="cart-header">Cart</header>
         <div
           className={`save-cart-icon ${isSaving ? "saving" : ""}`}
-          onClick={!isSaving ? handleSaveCart : null} // Disable click when saving
+          onClick= {handleSaveCart}
           title="Save Cart"
         >
           {isSaving ? "⏳" : "💾"} {/* Spinner or save icon */}
@@ -124,7 +134,7 @@ const CartScreen: React.FC = () => {
           <div key={product.id} className="cart-product">
             <button
               className="edit-cart-item-btn"
-              onClick={() => setSelectedProduct(product)}
+              onClick={() => setSelectedProduct({product,amount:1})}
             >
               ✎
             </button>
@@ -151,7 +161,7 @@ const CartScreen: React.FC = () => {
           onClose={handleCloseDialog}
           addToCart={() => {}}
           isCartItem={true}
-          amountInit={selectedProduct.amount}
+          amountInit={selectedProduct?.amount}
         />
       )}
 
