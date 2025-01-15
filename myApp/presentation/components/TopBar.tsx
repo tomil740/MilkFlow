@@ -1,86 +1,82 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { authState } from "../../domain/states/authState";
 import { useCart } from "../../domain/useCase/useCart";
-import "../style/TopBar.css";
 import ThemeToggleBut from "../../theme/ThemeToggleBut";
+import UserHeader from "./UserHeader";
+import "../style/TopBar.css";
 
-const authUserId = "fAHk3bhvX8yPRdTlS4zk"; // Mock authenticated user ID for now
- 
 const TopBar = () => {
   const navigate = useNavigate();
-  const [authUser, setAuthUser] = useState(true); // Replace with useRecoilState(authState) when ready
-  const { cart, initializeCart, syncCartToRemote, clearCart } = useCart();
-  const [isSaving, setIsSaving] = useState(false);
+  const [authUser, setAuthUser] = useRecoilState(authState);
+  const { cart, initializeCart } = useCart();
 
-  // Initialize cart when user logs in
+
   useEffect(() => {
     const initialize = async () => {
-      if (authUser) {
-        await initializeCart(authUserId);
-      } else {
-        clearCart(authUserId); // Clear cart if user logs out
-      }
+      if (authUser) await initializeCart(authUser.uid);
     };
     initialize();
   }, [authUser]);
 
-  const handleSaveCart = async () => {
-    if (!authUserId) {
-      console.log("User not authenticated. Cannot save cart.");
-      return;
-    }
-
-    setIsSaving(true);
+  const handleNavigation = (path:string) => {
     try {
-      await syncCartToRemote(authUserId);
-    } catch (error) {
-      console.error("Error saving cart:", error);
-    } finally {
-      setIsSaving(false);
+      navigate(path);
+    } catch (err) {
+      console.error("Navigation error:", err);
+      alert("Navigation unavailable.");
     }
-  };
-
-  const handleLogin = () => {
-    navigate("/login");
-  };
-
-  const handleLogout = () => {
-    setAuthUser(null); // Simulate logout
   };
 
   return (
     <div className="top-bar">
-      <div className="logo">
-        🛍️
+      {/* Left Section */}
+      <div className="top-bar-section">
+        <div
+          className="icon-button"
+          onClick={() => handleNavigation("/")}
+          title="ProductsCatalog"
+        >
+          🛍️
+        </div>
         <ThemeToggleBut />
       </div>
 
-      {authUser ? (
-        <div className="auth-container">
-          <span className="user-name">Hello, {"Tomi"}!</span>
-          <div
-            className={`save-cart-icon ${isSaving ? "saving" : ""}`}
-            onClick={handleSaveCart}
-            title="Save Cart"
+      {/* Right Section */}
+      <div className="top-bar-section">
+        {!authUser ? (
+          <button
+            className="nav-button"
+            onClick={() => handleNavigation("/login")}
           >
-            {isSaving ? "⏳" : "💾"} {/* Spinner or save icon */}
-          </div>
-          <div
-            className="cart-icon"
-            onClick={() => navigate("/cart")}
-            title="Go to cart"
-          >
-            🛒 ({cart.length || 0})
-          </div>
-          <button className="logout-button" onClick={handleLogout}>
-            Logout
+            Login
           </button>
-        </div>
-      ) : (
-        <button className="login-button" onClick={handleLogin}>
-          Login
-        </button>
-      )}
+        ) : (
+          <>
+            <UserHeader userId={authUser.uid} />
+            {!authUser.isDistributer && (
+              <div
+                className="icon-button"
+                onClick={() => handleNavigation("/cart")}
+                title="Go to Cart"
+              >
+                🛒 ({cart?.length || 0})
+              </div>
+            )}
+            <button className="nav-button" onClick={() => setAuthUser(null)}>
+              Logout
+            </button>
+            <div
+              className="icon-button"
+              onClick={() => handleNavigation("/demandsView")}
+              title="Demand Manager"
+            >
+              📋
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
