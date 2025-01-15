@@ -1,8 +1,8 @@
 import UserHeader from "./UserHeader";
 
-const DemandPreviewItem = ({ uid, amount, lastUpdate, status }) => {
+const DemandPreviewItem = ({ uid, amount, lastUpdate, status, onClick1 }) => {
   return (
-    <div className={`demand-preview-item status-${status}`}>
+    <div className={`demand-preview-item status-${status}`} onClick={onClick1}>
       <UserHeader userId={uid} />
       <div className="demand-info">
         <div>

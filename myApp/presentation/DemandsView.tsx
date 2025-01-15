@@ -6,19 +6,19 @@ import { useRecoilValue } from "recoil";
 import { authState } from "../domain/states/authState";
 import DemandPreviewItem from "./components/DemandPreviewItem";
 import "./style/demandsFeature.css";
-import { DemandsProductView } from './components/DemandsProductView';
+import { DemandsProductView } from "./components/DemandsProductView";
 import TwoWaySwitch from "./components/TwoWaySwitch";
-
+import { Demand } from "../domain/models/Demand";
+import { useNavigate } from "react-router-dom";
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
+  const navigate = useNavigate();
   const [status, setStatus] = useState("pending"); // Default status
   const [productView, setProductView] = useState(true);
 
   const isAuthenticated = userAuth !== null;
-  const userId = isAuthenticated
-      ? userAuth.uid
-    : "-1"; // Fake ID to indicate unauthenticated user
+  const userId = isAuthenticated ? userAuth.uid : "-1"; // Fake ID to indicate unauthenticated user
 
   const { data, loading, error, updateStatus } = useDemandsView(
     isAuthenticated ? userAuth.isDistributer : false,
@@ -26,32 +26,30 @@ const DemandsView = () => {
     status
   );
 
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     type: "",
   });
 
-  useEffect(()=>{
-    if(error!=null){
-        setSnackbar({
-          open: true,
-          message: `Fail to laod,${error}`,
-          type: "error",
-        });
+  useEffect(() => {
+    if (error != null) {
+      setSnackbar({
+        open: true,
+        message: `Failed to load: ${error}`,
+        type: "error",
+      });
     }
-  },[error])
+  }, [error]);
 
-  const statuses = ["pending", "approved", "completed"];
-            console.log(data.length);
+  const statuses = ["pending", "placed", "completed"];
 
-  const handleStatusChange = async () => {
+  const handleStatusChange = async (theData: Demand[]) => {
     if (userAuth?.isDistributer && status !== "completed") {
       const nextStatus = statuses[statuses.indexOf(status) + 1];
       try {
         await Promise.all(
-          data.map((demand) => updateStatus(demand.demandId, nextStatus))
+          theData.map((demand) => updateStatus(demand.demandId, nextStatus))
         );
         setSnackbar({
           open: true,
@@ -70,6 +68,10 @@ const DemandsView = () => {
   };
 
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
+
+  const handleDemandClick = (demand: Demand) => {
+    navigate(`/Demand/${demand.demandId}`, { state: { demand } });
+  };
 
   return (
     <div className={`demands-view-container status-${status}`}>
@@ -123,6 +125,7 @@ const DemandsView = () => {
                 amount={demand.products.length}
                 lastUpdate={demand.updatedAt}
                 status={demand.status}
+                onClick1={() => handleDemandClick(demand)} // Navigate to DemandItemPage
               />
             ))}
           </div>
@@ -130,7 +133,10 @@ const DemandsView = () => {
       </div>
 
       {userAuth?.isDistributer && status !== "completed" && (
-        <button className="update-status-btn" onClick={handleStatusChange}>
+        <button
+          className="update-status-btn"
+          onClick={() => handleStatusChange(data)}
+        >
           Update Status to {statuses[statuses.indexOf(status) + 1]}
         </button>
       )}

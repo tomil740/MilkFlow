@@ -81,6 +81,7 @@ export const updateDemandStatus = async (
   try {
     const demandDoc = doc(db, "Demands", demandId);
     await updateDoc(demandDoc, { status: nextStatus });
+        console.log("update demand from data ", demandId);
   } catch (error) {
     console.error("Failed to update demand status:", error);
     throw error;

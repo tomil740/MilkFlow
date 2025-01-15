@@ -48,13 +48,13 @@ export const useDemandsByProducts = (demands: Demand[]) => {
               });
             }
           });
-        }
+        } 
 
         // Convert grouped data into an array
         const productsSummary = Object.values(groupedProducts);
 
         // Step 2: Fetch product details and enrich the data
-        const enrichedData = productsSummary.map((item) => ({
+        const enrichedData = productsSummary.map((item) => ({ 
           ...item,
           product: products.find((p) => p.id === item.productId),
         }));
