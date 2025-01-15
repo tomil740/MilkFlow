@@ -3,12 +3,12 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyCZJQAHNWtlINdzVyX70IghJW8OFOfA_mA",
-  authDomain: "milkflow-5c80c.firebaseapp.com",
-  projectId: "milkflow-5c80c",
-  storageBucket: "milkflow-5c80c.firebasestorage.app",
-  messagingSenderId: "645066156053",
-  appId: "1:645066156053:web:98006196f9b6e876f0061c"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
