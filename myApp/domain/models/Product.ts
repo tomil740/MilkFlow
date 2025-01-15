@@ -15,5 +15,5 @@ export interface ProductWithAmount {
   imgUrl: string;
   category: string;
   description: String;
-  amount:Number;
+  amount:number;
 }

@@ -153,7 +153,7 @@ const CartScreen: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
+      </div> 
       {selectedProduct && ( 
         <ProductDialog
           product={selectedProduct}
