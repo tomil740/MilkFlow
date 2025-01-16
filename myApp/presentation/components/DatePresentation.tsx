@@ -10,15 +10,21 @@ export const DatePresentation = ({
   updatedAt: Date | Timestamp;
 }) => {
   // Helper function to convert Firebase Timestamp to a Date object
-  const convertToDate = (timestamp: Timestamp | Date): Date => {
+  const convertToDate = (timestamp: Timestamp | Date | null): Date | null => {
     if (timestamp instanceof Timestamp) {
       return timestamp.toDate(); // Convert Firebase Timestamp to Date
     }
-    return timestamp; // If it's already a Date object, return as is
+    return timestamp instanceof Date ? timestamp : null; // If it's a Date object or null, return it
   };
 
   // Format date to the desired format (YYYY/MM/DD HH:mm)
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | null): string | null => {
+    if (!date) return null; // If date is null, return null
+    // Check if the input is indeed a Date object
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      console.error("Invalid date object:", date);
+      return null;
+    }
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
     const day = String(date.getDate()).padStart(2, "0");

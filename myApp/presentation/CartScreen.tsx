@@ -11,26 +11,25 @@ import { authState } from "../domain/states/authState";
 import { ProductWithAmount } from '../domain/models/Product';
 
 
-
-
-
-const CartScreen: React.FC = () => { 
+const CartScreen: React.FC = () => {
   const { createDemand, loading, error, data } = useCreateDemand();
   const cartProducts = useRecoilValue(cartProductsSelector);
   const authUser = useRecoilValue(authState);
   const setCartState = useRecoilState(cartState)[1];
-  const [selectedProduct, setSelectedProduct] = useState<ProductWithAmount | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const {syncCartToRemote, clearCart } = useCart();
+  const [selectedProduct, setSelectedProduct] =
+    useState<ProductWithAmount | null>(null);
+  //disable the remote saving of the cart...
+  //const [isSaving, setIsSaving] = useState(false);
+  //const {syncCartToRemote, clearCart } = useCart();
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: "", 
+    message: "",
     type: "",
   });
   const [showLoadingDialog, setShowLoadingDialog] = useState(false);
 
   const handleCloseDialog = () => setSelectedProduct(null);
-
+/*//save cart function...
   const handleSaveCart = async () => {
     if (!authUser) {
       setSnackbar({
@@ -40,13 +39,13 @@ const CartScreen: React.FC = () => {
       });
       console.log("User not authenticated. Cannot save cart.");
       return;
-    }else if(isSaving){
+    }else if (isSaving) {
       setSnackbar({
         open: true,
         message: "A save process is runing...",
         type: "error",
       });
-      return
+      return;
     }
 
     setIsSaving(true);
@@ -68,6 +67,7 @@ const CartScreen: React.FC = () => {
       setIsSaving(false);
     }
   };
+  */
 
   const totalItems = cartProducts.length;
   const totalPrice = cartProducts.reduce(
@@ -100,7 +100,7 @@ const CartScreen: React.FC = () => {
       });
       setCartState([]); // Clear cart
       navigateBack(); // Simulate navigation
-    }else if(error!=null){
+    } else if (error != null) {
       setSnackbar({
         open: true,
         message: `Failed to create demand ${error}`,
@@ -120,20 +120,14 @@ const CartScreen: React.FC = () => {
     <div className="cart-container">
       <div className="cart-header-container">
         <header className="cart-header">Cart</header>
-        <div
-          className={`save-cart-icon ${isSaving ? "saving" : ""}`}
-          onClick= {handleSaveCart}
-          title="Save Cart"
-        >
-          {isSaving ? "⏳" : "💾"} {/* Spinner or save icon */}
-        </div>
+      
       </div>
       <div className="cart-products">
         {cartProducts.map((product) => (
           <div key={product.id} className="cart-product">
             <button
               className="edit-cart-item-btn"
-              onClick={() => setSelectedProduct(product)} 
+              onClick={() => setSelectedProduct(product)}
             >
               ✎
             </button>
@@ -153,8 +147,8 @@ const CartScreen: React.FC = () => {
             </div>
           </div>
         ))}
-      </div> 
-      {selectedProduct && ( 
+      </div>
+      {selectedProduct && (
         <ProductDialog
           product={selectedProduct}
           onClose={handleCloseDialog}

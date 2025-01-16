@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
+  Dialog,
 } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { authState } from "../domain/states/authState";
@@ -19,9 +20,8 @@ import { Product } from "../domain/models/Product";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUpdateDemandStatus } from "../domain/useCase/useUpdateDemandStatus";
 import "./style/demandItemPage.css";
-import { Demand } from '../domain/models/Demand';
+import { Demand } from "../domain/models/Demand";
 import { DatePresentation } from "./components/DatePresentation";
-
 
 const DemandItemPage: React.FC = () => {
   const location = useLocation();
@@ -30,7 +30,8 @@ const DemandItemPage: React.FC = () => {
 
   const [snackMessage, setSnackMessage] = useState<string | null>(null);
   const [snackSeverity, setSnackSeverity] = useState<"success" | "error">();
- 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const { demand } = location.state as { demand: Demand };
   const { products, fetchProducts, loading: productsLoading } = useProducts();
   const [cartProducts, setCartProducts] = useState<
@@ -40,6 +41,7 @@ const DemandItemPage: React.FC = () => {
     updating,
     error: updateError,
     updateStatus,
+    processCompleted,
   } = useUpdateDemandStatus();
 
   useEffect(() => {
@@ -49,12 +51,10 @@ const DemandItemPage: React.FC = () => {
     }
   }, [demand, navigate]);
 
-  // Fetch products and map demand products to cartProducts
   useEffect(() => {
     const loadProducts = async () => {
-      await fetchProducts(); // Fetch all products
+      await fetchProducts();
     };
-
     loadProducts();
   }, [fetchProducts]);
 
@@ -71,29 +71,33 @@ const DemandItemPage: React.FC = () => {
     }
   }, [demand, products]);
 
-  if (!demand) {
-    return null; // Avoid rendering until demand is confirmed
-  }
   const handleUpdateStatus = async () => {
     try {
+      setDialogOpen(true);
       const newStatus = demand.status === "pending" ? "placed" : "completed";
-      await updateStatus(demand.demandId, newStatus);
+      await updateStatus(demand.demandId, demand.status, newStatus);
+
       setSnackMessage(`Demand marked as ${newStatus}.`);
       setSnackSeverity("success");
-      navigate("/demandsView");
+      setTimeout(() => navigate("/demandsView"), 2000); // Delayed navigation
     } catch (err) {
       console.error("Failed to update status:", err);
       setSnackMessage("Failed to update demand status.");
       setSnackSeverity("error");
+    } finally {
+      setDialogOpen(false);
     }
   };
 
-  if (!demand) {
-    return null;
-  }
-
   return (
     <div className="demand-page-container">
+      <Dialog open={dialogOpen}>
+        <div className="loading-dialog">
+          <CircularProgress />
+          <Typography variant="body1">Updating demand status...</Typography>
+        </div>
+      </Dialog>
+
       <Card className="demand-header">
         <CardContent>
           <div className="demand-header-row">
@@ -108,7 +112,10 @@ const DemandItemPage: React.FC = () => {
               )}
             </div>
           </div>
-          <DatePresentation createdAt={demand.createdAt} updatedAt={demand.updatedAt}/>
+          <DatePresentation
+            createdAt={demand.createdAt}
+            updatedAt={demand.updatedAt}
+          />
         </CardContent>
       </Card>
 
@@ -159,6 +166,7 @@ const DemandItemPage: React.FC = () => {
             color="primary"
             className="update-status-button"
             onClick={handleUpdateStatus}
+            disabled={updating || processCompleted} // Disable button if updating or process is completed
           >
             {demand.status === "pending"
               ? "Mark as Placed"
@@ -171,6 +179,3 @@ const DemandItemPage: React.FC = () => {
 };
 
 export default DemandItemPage;
-
-
-

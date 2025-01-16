@@ -7,6 +7,8 @@ import {
   updateDoc,
   doc,
   FirestoreError,
+  Timestamp,
+  getDoc
 } from "firebase/firestore";
 import { db } from "../../backEnd/firebaseConfig";
 import { Demand } from '../../domain/models/Demand';
@@ -63,21 +65,32 @@ export const observeDemands = (
 };
 
 /**
- * Update the status of a specific demand.
+ * Update the status of a specific demand and optionally verify the update.
  * @param demandId - The ID of the demand to update.
  * @param nextStatus - The next status to set.
- * @returns Promise resolving when the status is updated.
+ * @param verify - Whether to verify the update by reading the document.
+ * @returns Promise resolving to a boolean indicating success.
  */
 export const updateDemandStatus = async (
   demandId: string,
-  nextStatus: string
-): Promise<void> => {
+  nextStatus: string,
+  verify: boolean = true
+): Promise<boolean> => {
   try {
     const demandDoc = doc(db, "Demands", demandId);
-    await updateDoc(demandDoc, { status: nextStatus });
-        console.log("update demand from data ", demandId);
+    await updateDoc(demandDoc, { status: nextStatus, updatedAt: Timestamp.now() });
+    console.log("Updated demand successfully:", demandId);
+
+    if (verify) {
+      const updatedDoc = await getDoc(demandDoc);
+      return updatedDoc.exists() && updatedDoc.data()?.status === nextStatus;
+    }
+
+    return true; // Assume success if no verification
   } catch (error) {
     console.error("Failed to update demand status:", error);
-    throw error;
+    return false;
   }
 };
+
+

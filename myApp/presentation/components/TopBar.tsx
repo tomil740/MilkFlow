@@ -12,13 +12,14 @@ const TopBar = () => {
   const [authUser, setAuthUser] = useRecoilState(authState);
   const { cart, initializeCart } = useCart();
 
-
+/*Disable the remote save of the cart...
   useEffect(() => {
     const initialize = async () => {
       if (authUser) await initializeCart(authUser.uid);
     };
     initialize();
   }, [authUser]);
+  */
 
   const handleNavigation = (path:string) => {
     try {
