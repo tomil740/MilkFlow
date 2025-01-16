@@ -6,21 +6,22 @@ import { cartProductsSelector, cartState } from "../domain/states/cartState";
 import "./style/cart.css";
 import { useCreateDemand } from "../domain/useCase/useCreateDemand";
 import ProductDialog from "./components/ProductDialog";
-import { useCart } from "../domain/useCase/useCart";
 import { authState } from "../domain/states/authState";
 import { ProductWithAmount } from '../domain/models/Product';
+import { useNavigate } from "react-router-dom";
+
 
 
 const CartScreen: React.FC = () => {
   const { createDemand, loading, error, data } = useCreateDemand();
   const cartProducts = useRecoilValue(cartProductsSelector);
-  const authUser = useRecoilValue(authState);
   const setCartState = useRecoilState(cartState)[1];
   const [selectedProduct, setSelectedProduct] =
     useState<ProductWithAmount | null>(null);
-  //disable the remote saving of the cart...
-  //const [isSaving, setIsSaving] = useState(false);
-  //const {syncCartToRemote, clearCart } = useCart();
+  const navigate = useNavigate();
+  
+
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -29,7 +30,10 @@ const CartScreen: React.FC = () => {
   const [showLoadingDialog, setShowLoadingDialog] = useState(false);
 
   const handleCloseDialog = () => setSelectedProduct(null);
-/*//save cart function...
+  /*//save cart function...
+  //disable the remote saving of the cart...
+  //const [isSaving, setIsSaving] = useState(false);
+  //const {syncCartToRemote, clearCart } = useCart();
   const handleSaveCart = async () => {
     if (!authUser) {
       setSnackbar({
@@ -99,7 +103,7 @@ const CartScreen: React.FC = () => {
         type: "success",
       });
       setCartState([]); // Clear cart
-      navigateBack(); // Simulate navigation
+      setTimeout(() => navigateBack(), 2000);
     } else if (error != null) {
       setSnackbar({
         open: true,
@@ -110,8 +114,7 @@ const CartScreen: React.FC = () => {
   }, [data, error]);
 
   const navigateBack = () => {
-    console.log("Navigating back...");
-    // Replace with actual navigation logic
+    navigate("/demandsView");
   };
 
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
@@ -120,7 +123,10 @@ const CartScreen: React.FC = () => {
     <div className="cart-container">
       <div className="cart-header-container">
         <header className="cart-header">Cart</header>
-      
+        <div className="cart-summary">
+          <div>Total Items: {totalItems}</div>
+          <div>Total Price: {totalPrice.toFixed(2)}₪</div>
+        </div>
       </div>
       <div className="cart-products">
         {cartProducts.map((product) => (
@@ -157,11 +163,6 @@ const CartScreen: React.FC = () => {
           amountInit={selectedProduct?.amount}
         />
       )}
-
-      <div className="cart-summary">
-        <div>Total Items: {totalItems}</div>
-        <div>Total Price: {totalPrice.toFixed(2)}₪</div>
-      </div>
 
       <button
         className={`checkout-btn ${loading ? "loading" : ""}`}

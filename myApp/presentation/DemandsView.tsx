@@ -16,7 +16,7 @@ const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
   const navigate = useNavigate();
   const [status, setStatus] = useState("pending");
-  const [productView, setProductView] = useState(true);
+  const [productView, setProductView] = useState(false);
 
   const isAuthenticated = Boolean(userAuth);
   const userId = isAuthenticated ? userAuth?.uid : "-1"; // Default ID for unauthenticated users
@@ -112,6 +112,12 @@ const DemandsView = () => {
         </div>
       )}
 
+      {error && (
+          <Typography variant="h6">
+            Error is throwen on loading data {error}
+          </Typography>
+      )}
+
       {snackbar.open && (
         <Snackbar
           open={snackbar.open}
@@ -124,7 +130,7 @@ const DemandsView = () => {
       )}
 
       <div className="demands-list">
-        {data?.length > 0 && isAuthenticated && (!loading) ? (
+        {data?.length > 0 && isAuthenticated && !loading ? (
           <>
             <div className="switchContainer">
               <TwoWaySwitch value={productView} onChange={setProductView} />
