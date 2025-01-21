@@ -39,7 +39,6 @@ const useAuth = () => {
     email: string,
     password: string,
     name: string,
-    imageUrl: string,
     distributerId: string,
   ) => {
     setLoading(true);
@@ -52,10 +51,10 @@ const useAuth = () => {
       );
       const newUser: User = {
         name,
-        imageUrl,
         uid: firebaseUser.uid,
         distributerId: distributerId,
         isDistributer: false,
+        productsCollection:[]
       };
       await setDoc(doc(db, "users", firebaseUser.uid), newUser);
       setUser(newUser);
