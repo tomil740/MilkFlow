@@ -1,0 +1,22 @@
+.barcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.barcode-presentation {
+  margin-top: 8px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-outline);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.barcode-error-message {
+  color: var(--color-error);
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 8px;
+}

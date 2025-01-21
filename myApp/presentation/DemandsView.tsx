@@ -29,7 +29,7 @@ const DemandsView = () => {
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    type: "",
+    type: "", 
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const statuses = ["pending", "placed", "completed"];

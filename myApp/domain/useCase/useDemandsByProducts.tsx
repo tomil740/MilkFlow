@@ -9,7 +9,7 @@ export const useDemandsByProducts = (demands: Demand[]) => {
   const [data, setData] = useState<SummarizedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const { products, fetchProducts } = useProducts();
+  const { allProducts, fetchProducts } = useProducts();
 
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export const useDemandsByProducts = (demands: Demand[]) => {
 
         // Step 2: Fetch product details and enrich the data
         const enrichedData = productsSummary.map((item) => {
-          const product = products.find((p) => p.id === item.productId);
+          const product = allProducts.find((p) => p.id === item.productId);
 
           // Type assertion that the product will be found or return undefined
           return {

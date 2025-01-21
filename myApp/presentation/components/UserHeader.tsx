@@ -38,14 +38,6 @@ const UserHeader: React.FC<UserHeaderProps> = ({ userId }) => {
   return (
     <div style={styles.container}>
       <p style={styles.userName}>{data.name}</p>
-      <img
-        src={data.imageUrl}
-        alt={data.name}
-        style={styles1.profileImage}
-        onError={(e) =>
-          ((e.target as HTMLImageElement).src = "/placeholder.png")
-        }
-      />
     </div>
   );
 };

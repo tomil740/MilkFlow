@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { observeDemands, updateDemandStatus } from "../../data/remoteDao/demadnsView";
+import { observeDemands, updateDemandStatus } from "../../data/remoteDao/demadnsView"; 
 import { Demand } from '../models/Demand';
 import { retryOperation } from '../../data/remoteDao/util';
 
@@ -39,7 +39,7 @@ export const useDemandsView = (
         setLoading(false);
       },
       (errorMessage) => {
-        setError(errorMessage);
+        setError(errorMessage); 
         setLoading(false);
       }
     );

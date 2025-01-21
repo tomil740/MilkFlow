@@ -1,27 +1,25 @@
 import { useState, useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { filteredProductsState, productsState } from "../states/productsState";
 import { fetchProductsFromFirestore } from "../../data/remoteDao/fetchProductsFromFirestore";
-import { Product } from '../models/Product';
+import { Product } from "../models/Product";
+import { authState } from "../states/authState";
+import { filteredProductsState, productsState } from "../states/productsState";
 
-
-function useProducts() {
+function useProducts() { 
+  const allProducts = useRecoilValue(productsState)
   const products = useRecoilValue<Product[]>(filteredProductsState);
   const setProducts = useRecoilState(productsState)[1];
+  const authenticatedUser = useRecoilValue(authState); // Authenticated user state
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = async (): Promise<Product[]> => {
-    if (products.length > 0) return products; // Step 1: Use Recoil state if available
-
     setLoading(true);
     setError(null);
 
     try {
-      // Step 3: Fetch from Firestore
       const firestoreProducts = await fetchProductsFromFirestore();
-      setProducts(firestoreProducts);
-      return firestoreProducts;
+      return firestoreProducts; // Return raw data for filtering
     } catch (err: any) {
       setError(err.message || "An error occurred");
       return [];
@@ -30,11 +28,28 @@ function useProducts() {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  useEffect(() => { 
+    const syncProductsState = async () => {
+      const allProducts = await fetchProducts();
 
-  return { products, fetchProducts, loading, error };
+      if (authenticatedUser) {
+        if (authenticatedUser.isDistributer) {
+          // Distributor: Use all products
+          setProducts(allProducts);
+        } else if (authenticatedUser.productsCollection) {
+          // Non-distributor: Filter by `productsCollection`
+          const filtered = allProducts.filter((product) =>
+            authenticatedUser.productsCollection.includes(product.id)
+          );
+          setProducts(filtered); // Update the single global state
+        }
+      }
+    };
+
+    syncProductsState();
+  }, [authenticatedUser]); // React to changes in the authenticated user state
+
+  return { products, fetchProducts, loading, error, allProducts };
 }
 
 export default useProducts;

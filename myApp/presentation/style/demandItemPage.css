@@ -15,7 +15,7 @@
 }
 
 .user-details-row {
-  display: flex;
+  display: flex; 
   gap: 16px;
 }
 

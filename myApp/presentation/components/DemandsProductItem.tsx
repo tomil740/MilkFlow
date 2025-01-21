@@ -1,5 +1,7 @@
 import { SummarizedProduct } from "../../domain/models/SummarizedProduct";
+import BarcodeComponent from "./BarcodeComponent";
 import UserHeader from "./UserHeader";
+
 
 
 interface DemandsProductItemProps {
@@ -23,6 +25,12 @@ const DemandsProductItem: React.FC<DemandsProductItemProps> = ({ product }) => {
           <div className="product-id">ID: {product.productId}</div>
         </div>
       </div>
+      <div className="barcode-container">
+        {/* Render BarcodeComponent only if product is not null */}
+        {product && product.product && product.product.barcode && (
+          <BarcodeComponent value={product.product.barcode} />
+        )}
+      </div>
 
       {/* Total Amount */}
       <div className="total-amount">
@@ -33,7 +41,7 @@ const DemandsProductItem: React.FC<DemandsProductItemProps> = ({ product }) => {
       <div className="user-description">
         {product.usersAmounts.map((user) => (
           <div key={user.userId} className="user-row">
-            <UserHeader userId={user.userId} />
+            <UserHeader userId={user.userId} />  
             <div className="user-amount">
               כמות: <strong>{user.amount}</strong>
             </div>

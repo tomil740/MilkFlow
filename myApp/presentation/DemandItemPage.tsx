@@ -33,7 +33,11 @@ const DemandItemPage: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { demand } = location.state as { demand: Demand };
-  const { products, fetchProducts, loading: productsLoading } = useProducts();
+  const {
+    allProducts,
+    fetchProducts,
+    loading: productsLoading,
+  } = useProducts();
   const [cartProducts, setCartProducts] = useState<
     (Product & { amount: number })[]
   >([]);
@@ -51,25 +55,27 @@ const DemandItemPage: React.FC = () => {
     }
   }, [demand, navigate]);
 
+  /*Currently cause a bug , accoridgn to the by user products filtering...
   useEffect(() => {
     const loadProducts = async () => {
       await fetchProducts();
     };
-    loadProducts();
+    //loadProducts();
   }, [fetchProducts]);
-
+*/
   useEffect(() => {
     if (demand) {
       const mappedProducts = demand.products
         .map((item) => {
-          const product = products.find((p) => p.id === item.productId);
+          const product = allProducts.find((p) => p.id === item.productId);
+          //need to use the fetch Products callback when a demand product Id isnt found
           return product ? { ...product, amount: item.amount } : null;
         })
         .filter((item): item is Product & { amount: number } => item !== null);
 
       setCartProducts(mappedProducts);
     }
-  }, [demand, products]);
+  }, [demand, allProducts]);
 
   const handleUpdateStatus = async () => {
     try {
@@ -77,7 +83,6 @@ const DemandItemPage: React.FC = () => {
       const newStatus = demand.status === "pending" ? "placed" : "completed";
       await updateStatus(demand.demandId, demand.status, newStatus);
 
-      setSnackMessage(`Demand marked as ${newStatus}.`);
       setSnackSeverity("success");
       setTimeout(() => navigate("/demandsView"), 2000); // Delayed navigation
     } catch (err) {
@@ -138,10 +143,9 @@ const DemandItemPage: React.FC = () => {
               <div className="product-details">
                 <Typography variant="subtitle1">{productItem.name}</Typography>
                 <Typography variant="body2">
-                  Price: {productItem.price.toFixed(2)}₪
                 </Typography>
                 <Typography variant="body2">
-                  Amount: {productItem.amount}
+                  Packages: {productItem.amount}
                 </Typography>
               </div>
             </ListItem>
