@@ -19,7 +19,7 @@ export const fetchProductsFromFirestore = async (): Promise<Product[]> => {
     );
 
     // Map and return product data
-     const a = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Product));
+     const a = snapshot.docs.map((doc) => ({...doc.data() } as Product));
      return a;
   } catch (error) {
     console.error("Error fetching products from Firestore:", error);
