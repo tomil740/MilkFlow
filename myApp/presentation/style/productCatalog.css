@@ -22,16 +22,31 @@ body{
   justify-content: space-between;
   box-shadow: 0 2px 4px var(--color-shadow);
   transition: transform 0.2s, box-shadow 0.2s;
+
+  height: 100%; /* Ensure consistency in height */
+
 }
 
 .product-preview-item:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 8px var(--color-shadow);
 }
+/* Image Container */
+.product-image-container {
+  width: 100%;
+  aspect-ratio: 4 / 3; /* Set a consistent aspect ratio */
+  overflow: hidden; /* Prevent overflow */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-surface-bright); /* Optional: Background for missing images */
+}
+
 /* Image */
 .product-image {
-  height: auto;
   width: 100%;
+  height: 100%;
+  object-fit: contain; /* Preserve the aspect ratio of images */
 }
 
 /* Product Info */

@@ -68,7 +68,6 @@ const DemandItemPage: React.FC = () => {
       const mappedProducts = demand.products
         .map((item) => {
           const product = allProducts.find((p) => p.id === item.productId);
-          console.log(product)
           //need to use the fetch Products callback when a demand product Id isnt found
           return product ? { ...product, amount: item.amount } : null;
         })
@@ -141,7 +140,7 @@ const DemandItemPage: React.FC = () => {
                 alt={productItem.name}
                 className="product-img"
                 onError={(e) => {
-                  e.currentTarget.src = `/productsImages/logos/small_logo.png`;
+                  e.currentTarget.src = `/productsImages/logos/large_logo.png`;
                 }}
               />
               <div className="product-details">

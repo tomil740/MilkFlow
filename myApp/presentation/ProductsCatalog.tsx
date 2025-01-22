@@ -39,7 +39,7 @@ const ProductsCatalog: React.FC = () => {
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
           />
         )}
-        <Grid container spacing={2}>
+        <Grid container spacing={2}> 
           {products.map((product) => (
             <Grid item xs={6} sm={4} md={3} key={product.id}>
               <div onClick={() => handleProductClick(product)}>
