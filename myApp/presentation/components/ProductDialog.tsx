@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import "../style/productCatalog.css";
 import Select from "react-select";
 import BarcodeComponent from './BarcodeComponent';
+import useEditCart from "../../domain/util/useEditCart";
 
 
 interface CartItemRef {
@@ -35,6 +36,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
   amountInit = 1,
   addToCart,
 }) => {
+  const editCartItem = useEditCart();
   const [amount, setAmount] = useState(amountInit);
 
   const handleIncrease = () => setAmount((prev) => prev + 1);
@@ -57,6 +59,17 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
     addToCart({ productId: product.id, amount });
     onClose();
   };
+
+  function handleUpdateCart(toRemove: boolean) {
+    if (isCartItem) {
+      if (toRemove) {
+        editCartItem({ productId: product?.id, amount: -1 });
+      } else {
+        editCartItem({ productId: product?.id, amount });
+      }
+    }
+    onClose();
+  }
 
   return (
     <div className="product-dialog-overlay" onClick={onClose}>
@@ -98,9 +111,27 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
         <span>
           {amount} חבילות ({amount * product.itemsPerPackage})
         </span>
-        <button className="product-dialog-action" onClick={handleAddToCart}>
-          הוסף לסל
-        </button>
+        {/* Conditional rendering for action buttons */}
+        {!isCartItem ? (
+          <button className="product-dialog-action" onClick={handleAddToCart}>
+            הוסף לסל
+          </button>
+        ) : (
+          <div className="cart-item-actions">
+            <button
+              className="product-dialog-action update-cart-button"
+              onClick={() => handleUpdateCart(false)}
+            >
+              עדכן את הסל
+            </button>
+            <button
+              className="product-dialog-action remove-cart-button"
+              onClick={() => handleUpdateCart(true)}
+            >
+              הסר מהסל
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
