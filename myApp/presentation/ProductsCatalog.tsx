@@ -39,7 +39,7 @@ const ProductsCatalog: React.FC = () => {
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
           />
         )}
-        <Grid container spacing={2}>
+        <Grid container spacing={2}> 
           {products.map((product) => (
             <Grid item xs={6} sm={4} md={3} key={product.id}>
               <div onClick={() => handleProductClick(product)}>
@@ -48,14 +48,14 @@ const ProductsCatalog: React.FC = () => {
                   onClick={() => handleProductClick(product)}
                 />
               </div>
-            </Grid>
-          ))}
+            </Grid>  
+          ))} 
         </Grid>
         {selectedProduct && (
-          <ProductDialog
+          <ProductDialog 
             product={selectedProduct}
             onClose={handleCloseDialog}
-            addToCart={(cartItem: { productId: string; amount: number }) =>
+            addToCart={(cartItem: { productId: number; amount: number }) =>
               addToCart(cartItem)
             }
           />

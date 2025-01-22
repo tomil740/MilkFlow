@@ -15,7 +15,7 @@
 }
 
 .user-details-row {
-  display: flex;
+  display: flex; 
   gap: 16px;
 }
 
@@ -53,4 +53,9 @@
   color: var(--color-on-primary);
   padding: 1rem;
   border-radius: 8px;
+}
+
+.status-text {
+  color: var(--color-primary);
+  font-weight: bold; /* Ensures the text remains strong */
 }

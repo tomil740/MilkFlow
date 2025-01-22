@@ -7,7 +7,6 @@ export default function useAddToCart() {
   const [cartItems, setCart] = useRecoilState(cartState);
 
   function add(theItem: CartItem) {
-    console.log("called addToCart",cartItems)
     // Check if the item already exists in the cart
     const existingItemIndex = cartItems.findIndex(
       (item) => item.productId === theItem.productId

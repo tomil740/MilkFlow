@@ -2,7 +2,7 @@ import { Product } from "./Product";
 
 
 export interface SummarizedProduct {
-  productId: string;
+  productId: number;
   amount: number;
   usersAmounts: { userId: string; amount: number }[];
   product?: Product; // Optional, fetched from product collection

@@ -19,6 +19,7 @@ const useAuth = () => {
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
+    let res = false
     try {
       const { user: firebaseUser } = await signInWithEmailAndPassword(
         auth,
@@ -27,11 +28,14 @@ const useAuth = () => {
       );
       const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
       setUser(userDoc.data() as User);
+      res = true;
     } catch (err: any) {
       setError(err.message);
       setUser(null);
+      return res
     } finally {
       setLoading(false);
+      return res
     }
   };
 
@@ -39,7 +43,6 @@ const useAuth = () => {
     email: string,
     password: string,
     name: string,
-    imageUrl: string,
     distributerId: string,
   ) => {
     setLoading(true);
@@ -52,10 +55,10 @@ const useAuth = () => {
       );
       const newUser: User = {
         name,
-        imageUrl,
         uid: firebaseUser.uid,
         distributerId: distributerId,
         isDistributer: false,
+        productsCollection:[]
       };
       await setDoc(doc(db, "users", firebaseUser.uid), newUser);
       setUser(newUser);

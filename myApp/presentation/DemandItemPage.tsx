@@ -22,6 +22,7 @@ import { useUpdateDemandStatus } from "../domain/useCase/useUpdateDemandStatus";
 import "./style/demandItemPage.css";
 import { Demand } from "../domain/models/Demand";
 import { DatePresentation } from "./components/DatePresentation";
+import statusPresentation from './util/statusPresentation';
 
 const DemandItemPage: React.FC = () => {
   const location = useLocation();
@@ -33,7 +34,11 @@ const DemandItemPage: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { demand } = location.state as { demand: Demand };
-  const { products, fetchProducts, loading: productsLoading } = useProducts();
+  const {
+    allProducts,
+    fetchProducts,
+    loading: productsLoading,
+  } = useProducts();
   const [cartProducts, setCartProducts] = useState<
     (Product & { amount: number })[]
   >([]);
@@ -51,25 +56,27 @@ const DemandItemPage: React.FC = () => {
     }
   }, [demand, navigate]);
 
+  /*Currently cause a bug , accoridgn to the by user products filtering...
   useEffect(() => {
     const loadProducts = async () => {
       await fetchProducts();
     };
-    loadProducts();
+    //loadProducts();
   }, [fetchProducts]);
-
+*/
   useEffect(() => {
-    if (demand) {
+    if (demand) { 
       const mappedProducts = demand.products
         .map((item) => {
-          const product = products.find((p) => p.id === item.productId);
+          const product = allProducts.find((p) => p.id === item.productId);
+          //need to use the fetch Products callback when a demand product Id isnt found
           return product ? { ...product, amount: item.amount } : null;
         })
         .filter((item): item is Product & { amount: number } => item !== null);
 
       setCartProducts(mappedProducts);
     }
-  }, [demand, products]);
+  }, [demand, allProducts]);
 
   const handleUpdateStatus = async () => {
     try {
@@ -77,7 +84,6 @@ const DemandItemPage: React.FC = () => {
       const newStatus = demand.status === "pending" ? "placed" : "completed";
       await updateStatus(demand.demandId, demand.status, newStatus);
 
-      setSnackMessage(`Demand marked as ${newStatus}.`);
       setSnackSeverity("success");
       setTimeout(() => navigate("/demandsView"), 2000); // Delayed navigation
     } catch (err) {
@@ -102,8 +108,10 @@ const DemandItemPage: React.FC = () => {
         <CardContent>
           <div className="demand-header-row">
             <Typography variant="h6" className="demand-status">
-              Status:{" "}
-              {demand.status.charAt(0).toUpperCase() + demand.status.slice(1)}
+              סטטוס:
+              <strong className="status-text">
+                {statusPresentation(demand.status)}
+              </strong>
             </Typography>
             <div className="user-details-row">
               <UserHeader userId={demand.userId} />
@@ -131,17 +139,18 @@ const DemandItemPage: React.FC = () => {
           {cartProducts.map((productItem, index) => (
             <ListItem key={index} className="demand-product-item">
               <img
-                src={productItem.imgUrl}
+                src={`/productsImages/regular/${productItem.imgKey}.jpg`}
                 alt={productItem.name}
                 className="product-img"
+                onError={(e) => {
+                  e.currentTarget.src = `/productsImages/logos/large_logo.png`;
+                }}
               />
               <div className="product-details">
                 <Typography variant="subtitle1">{productItem.name}</Typography>
+                <Typography variant="body2"></Typography>
                 <Typography variant="body2">
-                  Price: {productItem.price.toFixed(2)}₪
-                </Typography>
-                <Typography variant="body2">
-                  Amount: {productItem.amount}
+                  Packages: {productItem.amount}
                 </Typography>
               </div>
             </ListItem>
@@ -169,8 +178,8 @@ const DemandItemPage: React.FC = () => {
             disabled={updating || processCompleted} // Disable button if updating or process is completed
           >
             {demand.status === "pending"
-              ? "Mark as Placed"
-              : "Mark as Completed"}
+              ? "עדכן סטטוס ל חלוקה"
+              : "עדכן סטטוס ל הושלם"}
           </Button>
         </div>
       )}

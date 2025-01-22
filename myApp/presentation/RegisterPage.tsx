@@ -48,7 +48,6 @@ const RegisterPage: React.FC = () => {
       email,
       password,
       name,
-      imageUrl,
       distributerPick!!
     ); // Updated to include distributor pick
     if (!error) navigate(-1); // Navigate back or to the homepage

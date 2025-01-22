@@ -74,10 +74,6 @@ const CartScreen: React.FC = () => {
   */
 
   const totalItems = cartProducts.length;
-  const totalPrice = cartProducts.reduce(
-    (sum, p) => sum + p.price * p.amount,
-    0
-  );
 
   const handleCheckout = async () => {
     setShowLoadingDialog(true); // Show loading overlay
@@ -122,10 +118,9 @@ const CartScreen: React.FC = () => {
   return (
     <div className="cart-container">
       <div className="cart-header-container">
-        <header className="cart-header">Cart</header>
+        <header className="cart-header">סיכום הזמנה</header>
         <div className="cart-summary">
-          <div>Total Items: {totalItems}</div>
-          <div>Total Price: {totalPrice.toFixed(2)}₪</div>
+          <div>סך הכל מוצרים: {totalItems}</div>
         </div>
       </div>
       <div className="cart-products">
@@ -138,17 +133,17 @@ const CartScreen: React.FC = () => {
               ✎
             </button>
             <img
-              src={product.imgUrl}
+              src={`productsImages/regular/${product.imgKey}.jpg`}
               alt={product.name}
               className="product-img"
+              onError={(e) => {
+                e.currentTarget.src = `productsImages/logos/large_logo.png`;
+              }}
             />
             <div className="product-info">
               <div className="product-name">{product.name}</div>
               <div className="product-amount">
-                Amount: <b>{product.amount}</b>
-              </div>
-              <div className="product-price">
-                Price: <b>{(product.price * product.amount).toFixed(2)}₪</b>
+                כמות: <b>{product.amount}</b>
               </div>
             </div>
           </div>
@@ -169,7 +164,7 @@ const CartScreen: React.FC = () => {
         onClick={handleCheckout}
         disabled={loading}
       >
-        {loading ? "Processing..." : "Make a Demand"}
+        {loading ? "מבצע..." : "בצע הזמנה"}
       </button>
 
       {/* Snackbar for feedback */}

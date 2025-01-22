@@ -22,17 +22,31 @@ body{
   justify-content: space-between;
   box-shadow: 0 2px 4px var(--color-shadow);
   transition: transform 0.2s, box-shadow 0.2s;
+
+  height: 100%; /* Ensure consistency in height */
+
 }
 
 .product-preview-item:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 8px var(--color-shadow);
 }
+/* Image Container */
+.product-image-container {
+  width: 100%;
+  aspect-ratio: 4 / 3; /* Set a consistent aspect ratio */
+  overflow: hidden; /* Prevent overflow */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-surface-bright); /* Optional: Background for missing images */
+}
 
 /* Image */
 .product-image {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain; /* Preserve the aspect ratio of images */
 }
 
 /* Product Info */
@@ -104,6 +118,7 @@ body{
   width: 90%;
   max-width: 400px;
   max-height: 90vh;
+  overflow-y: auto;
   background: var(--color-surface-container-high);
   border: 1px solid var(--color-outline);
   border-radius: 16px;
@@ -279,6 +294,32 @@ body{
   margin-top: 16px;
 }
 
+.product-dialog-info {
+  margin: 16px 0;
+  text-align: center;
+}
+
+.product-dialog-info h2 {
+  font-size: 20px;
+  color: var(--color-on-surface);
+  margin-bottom: 8px;
+}
+
+.product-dialog-description {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 12px;
+}
+
+.product-dialog-category,
+.product-dialog-barcode,
+.product-dialog-weight,
+.product-dialog-items {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 8px;
+}
+ 
 
 
 

@@ -11,6 +11,7 @@ import TwoWaySwitch from "./components/TwoWaySwitch";
 import { Demand } from "../domain/models/Demand";
 import { useNavigate } from "react-router-dom";
 import { Typography, Dialog } from "@mui/material";
+import statusPresentation from './util/statusPresentation';
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
@@ -29,7 +30,7 @@ const DemandsView = () => {
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    type: "",
+    type: "", 
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const statuses = ["pending", "placed", "completed"];
@@ -51,7 +52,7 @@ const DemandsView = () => {
     setDialogOpen(true);
     setSnackbar({
       open: true,
-      message: `Updating status to ${nextStatus}...`,
+      message: `Updating status to ${statusPresentation(nextStatus)}...`,
       type: "info",
     });
 
@@ -88,22 +89,25 @@ const DemandsView = () => {
       <Dialog open={dialogOpen}>
         <div className="loading-dialog">
           <CircularProgress />
-          <Typography variant="body1">Updating status...</Typography>
+          <Typography variant="body1">מעדכן סטטוס ביצוע...</Typography>
         </div>
       </Dialog>
 
-      <header className="demands-header">Demands View</header>
+      <header className="demands-header">מנהל דרישות</header>
 
-      <div className="status-menu">
-        {statuses.map((s) => (
-          <button
-            key={s}
-            className={`status-btn ${s === status ? "selected" : ""}`}
-            onClick={() => setStatus(s)}
-          >
-            {s}
-          </button>
-        ))}
+      <div className="status-menu-container">
+        <div className="status-menu-header">סינון לפי סטטוס</div>
+        <div className="status-menu">
+          {statuses.map((s) => (
+            <button
+              key={s}
+              className={`status-btn ${s === status ? "selected" : ""}`}
+              onClick={() => setStatus(s)}
+            >
+              {statusPresentation(s)}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading && (
@@ -113,9 +117,7 @@ const DemandsView = () => {
       )}
 
       {error && (
-          <Typography variant="h6">
-            Error is throwen on loading data {error}
-          </Typography>
+        <Typography variant="h6">שגיאה בטעינת הדרישות, {error}</Typography>
       )}
 
       {snackbar.open && (
@@ -156,7 +158,7 @@ const DemandsView = () => {
           </>
         ) : (
           <Typography variant="h6">
-            No demands available for this status.
+            אין דרישות מתאימות לסטטוס הנבחר...
           </Typography>
         )}
       </div>
@@ -168,7 +170,8 @@ const DemandsView = () => {
             className="update-status-btn"
             onClick={() => handleStatusChange(data)}
           >
-            Update Status to {statuses[statuses.indexOf(status) + 1]}
+            עדכן סטטוס ל{" "}
+            {statusPresentation(statuses[statuses.indexOf(status) + 1])}
           </button>
         )}
     </div>

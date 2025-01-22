@@ -7,7 +7,7 @@ interface DemandsProductViewProps {
 }
 
 export const DemandsProductView: React.FC<DemandsProductViewProps> = ({
-  demands,
+  demands, 
 }) => {
   const {
     loading,

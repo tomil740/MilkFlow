@@ -1,19 +1,23 @@
 export interface Product {
-  id: string;
+  id: number;
+  barcode: number;
   name: string;
-  price: number; 
-  imgUrl: string;
+  imgKey: string;
   category: string;
+  itemsPerPackage: number;
+  weight: number;
   description: String;
 }
 
 
 export interface ProductWithAmount {
-  id: string;
+  id: number;
+  barcode: number;
   name: string;
-  price: number;
-  imgUrl: string;
+  imgKey: string;
   category: string;
+  itemsPerPackage: number;
+  weight: number;
   description: String;
-  amount:number;
+  amount: number;
 }
