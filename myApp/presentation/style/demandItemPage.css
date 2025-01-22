@@ -54,3 +54,8 @@
   padding: 1rem;
   border-radius: 8px;
 }
+
+.status-text {
+  color: var(--color-primary);
+  font-weight: bold; /* Ensures the text remains strong */
+}

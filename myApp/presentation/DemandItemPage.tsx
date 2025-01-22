@@ -22,6 +22,7 @@ import { useUpdateDemandStatus } from "../domain/useCase/useUpdateDemandStatus";
 import "./style/demandItemPage.css";
 import { Demand } from "../domain/models/Demand";
 import { DatePresentation } from "./components/DatePresentation";
+import statusPresentation from './util/statusPresentation';
 
 const DemandItemPage: React.FC = () => {
   const location = useLocation();
@@ -107,8 +108,10 @@ const DemandItemPage: React.FC = () => {
         <CardContent>
           <div className="demand-header-row">
             <Typography variant="h6" className="demand-status">
-              Status:{" "}
-              {demand.status.charAt(0).toUpperCase() + demand.status.slice(1)}
+              סטטוס:
+              <strong className="status-text">
+                {statusPresentation(demand.status)}
+              </strong>
             </Typography>
             <div className="user-details-row">
               <UserHeader userId={demand.userId} />
@@ -175,8 +178,8 @@ const DemandItemPage: React.FC = () => {
             disabled={updating || processCompleted} // Disable button if updating or process is completed
           >
             {demand.status === "pending"
-              ? "Mark as Placed"
-              : "Mark as Completed"}
+              ? "עדכן סטטוס ל חלוקה"
+              : "עדכן סטטוס ל הושלם"}
           </Button>
         </div>
       )}

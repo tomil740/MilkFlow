@@ -6,26 +6,79 @@
 .demands-header {
   font-size: 1.5rem;
   font-weight: bold;
+  color: var(--color-on-surface);
 }
 
+/* Status Menu Container */
+.status-menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: var(--color-surface-container);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px var(--color-shadow);
+}
+
+/* Menu Header */
+.status-menu-header {
+  font-size: 1rem;
+  color: var(--color-on-surface);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* Status Menu */
 .status-menu {
   display: flex;
-  justify-content: space-around;
-  margin: 1rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  column-gap: 0.9rem;
 }
 
+/* Status Button */
 .status-btn {
   padding: 0.5rem 1rem;
-  border: none;
+  border: 1px solid var(--color-outline);
   background-color: var(--color-surface);
   color: var(--color-on-surface);
   border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
 }
 
+/* Hover and Active Effects */
+.status-btn:hover {
+  background-color: var(--color-surface-variant);
+}
+
+.status-btn:active {
+  transform: scale(0.95);
+}
+
+/* Selected Button */
 .status-btn.selected {
   background-color: var(--color-primary);
   color: var(--color-on-primary);
+  transform: scale(1.3);
+  border: none;
 }
+
+/* Responsive Design for Mobile */
+@media (max-width: 350px) {
+  .status-menu {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .status-btn {
+    width: 100%; /* Full width for buttons on small screens */
+  }
+}
+
 
 .demands-list {
   display: flex;
@@ -33,13 +86,54 @@
   gap: 1rem;
 }
 
+/* Base Styles for Demand Preview Item */
 .demand-preview-item {
   display: flex;
   flex-direction: column;
-  background-color: var(--color-surface-container);
+  background-color: var(--color-surface-container); /* Container surface */
+  color: var(--color-on-surface); /* Text color on surface */
   padding: 1rem;
   border-radius: 8px;
+  position: relative; /* Enables position-related adjustments */
+  box-shadow: 0 2px 4px var(--color-shadow); /* Subtle shadow for elevation */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth hover effect */
 }
+
+.demand-preview-item:hover {
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: 0 4px 8px var(--color-shadow); /* Enhanced shadow on hover */
+}
+
+/* Demand Info Styles */
+.demand-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--color-surface-container-high); /* Elevated surface */
+  border-radius: 6px;
+  color: var(--color-on-surface-variant); /* Subdued text for secondary info */
+}
+
+/* Status Text Styling */
+.status-text {
+  color: var(--color-primary); /* Highlight using primary color */
+  font-weight: bold;
+}
+
+/* Optional: Dynamic Status Styling Based on Classes */
+.status-active {
+  color: var(--color-secondary); /* Secondary color for 'active' status */
+}
+
+.status-completed {
+  color: var(--color-tertiary); /* Tertiary color for 'completed' status */
+}
+
+.status-error {
+  color: var(--color-error); /* Error color for problematic status */
+}
+
+
+
 
 .update-status-btn {
   position: fixed;
@@ -78,7 +172,7 @@
 .product-image {
   width: 48px;
   height: 48px;
-  border-radius: 4px;
+  border-radius: 4px; 
   object-fit: cover;
   background-color: var(--color-surface-variant);
 }

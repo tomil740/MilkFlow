@@ -56,7 +56,7 @@ export const DatePresentation = ({
             marginBottom: "8px", // Margin for spacing between the lines
           }}
         >
-          Created At:{" "}
+          נוצר ב:{" "}
           <span style={{ fontWeight: "bold" }}>{formattedCreatedAt}</span>
         </Typography>
       ) : (
@@ -70,7 +70,7 @@ export const DatePresentation = ({
           color: "text.primary",
         }}
       >
-        Updated At:{" "}
+        עודכן ב:{" "}
         <span style={{ fontWeight: "bold" }}>{formattedUpdatedAt}</span>
       </Typography>
     </div>

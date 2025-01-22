@@ -1,5 +1,7 @@
+import statusPresentation from "../util/statusPresentation";
 import { DatePresentation } from "./DatePresentation";
 import UserHeader from "./UserHeader";
+
 
 
 // Define an interface for the props of DemandPreviewItem
@@ -17,11 +19,11 @@ const DemandPreviewItem: React.FC<DemandPreviewItemProps> = ({ uid, amount, last
       <UserHeader userId={uid} />
       <div className="demand-info">
         <div>
-          Status: <span className="status-text">{status}</span>
+          סטטוס: <span className="status-text">{statusPresentation(status)}</span>
         </div>
-        <div>Items: {amount}</div>
+        <div>סך מוצרים: {amount}</div>
         <div>
-          <DatePresentation updatedAt={lastUpdate} createdAt={null}/>
+          <DatePresentation updatedAt={lastUpdate} createdAt={null} />
         </div>
       </div>
     </div>
