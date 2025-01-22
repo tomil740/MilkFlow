@@ -19,6 +19,7 @@ const useAuth = () => {
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
+    let res = false
     try {
       const { user: firebaseUser } = await signInWithEmailAndPassword(
         auth,
@@ -27,11 +28,14 @@ const useAuth = () => {
       );
       const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
       setUser(userDoc.data() as User);
+      res = true;
     } catch (err: any) {
       setError(err.message);
       setUser(null);
+      return res
     } finally {
       setLoading(false);
+      return res
     }
   };
 
