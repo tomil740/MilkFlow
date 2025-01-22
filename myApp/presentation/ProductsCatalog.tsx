@@ -48,14 +48,14 @@ const ProductsCatalog: React.FC = () => {
                   onClick={() => handleProductClick(product)}
                 />
               </div>
-            </Grid>
-          ))}
+            </Grid>  
+          ))} 
         </Grid>
         {selectedProduct && (
-          <ProductDialog
+          <ProductDialog 
             product={selectedProduct}
             onClose={handleCloseDialog}
-            addToCart={(cartItem: { productId: string; amount: number }) =>
+            addToCart={(cartItem: { productId: number; amount: number }) =>
               addToCart(cartItem)
             }
           />

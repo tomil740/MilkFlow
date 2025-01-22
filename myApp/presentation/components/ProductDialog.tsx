@@ -16,12 +16,11 @@ interface ProductDialogProps {
     id: number;
     barcode: number;
     name: string;
-    imgUrl: string;
+    imgKey: string;
     category: string;
     itemsPerPackage: number;
     weight: number;
-    isLiter: boolean;
-    description: string;
+    description: String;
   };
   onClose: () => void;
   isCartItem?: boolean; // Default to false
@@ -66,16 +65,19 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
           <CloseIcon />
         </IconButton>
         <img
-          src={product.imgUrl}
+          src={`productsImages/regular/${product.imgKey}.jpg`}
           alt={product.name}
           className="product-dialog-image"
+          onError={(e) => {
+            e.currentTarget.src = `productsImages/logos/large_logo.png`;
+          }}
         />
         <div className="product-dialog-info">
           <h2>{product.name}</h2>
           <p className="product-dialog-description">{product.description}</p>
-  
-          <BarcodeComponent value={product.barcode}/>
-          
+
+          <BarcodeComponent value={product.barcode} />
+
           <p className="product-dialog-weight">
             משקל: <strong>{product.weight} ק"ג</strong>
           </p>

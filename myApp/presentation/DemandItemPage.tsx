@@ -64,10 +64,11 @@ const DemandItemPage: React.FC = () => {
   }, [fetchProducts]);
 */
   useEffect(() => {
-    if (demand) {
+    if (demand) { 
       const mappedProducts = demand.products
         .map((item) => {
           const product = allProducts.find((p) => p.id === item.productId);
+          console.log(product)
           //need to use the fetch Products callback when a demand product Id isnt found
           return product ? { ...product, amount: item.amount } : null;
         })
@@ -136,14 +137,16 @@ const DemandItemPage: React.FC = () => {
           {cartProducts.map((productItem, index) => (
             <ListItem key={index} className="demand-product-item">
               <img
-                src={productItem.imgUrl}
+                src={`/productsImages/regular/${productItem.imgKey}.jpg`}
                 alt={productItem.name}
                 className="product-img"
+                onError={(e) => {
+                  e.currentTarget.src = `/productsImages/logos/small_logo.png`;
+                }}
               />
               <div className="product-details">
                 <Typography variant="subtitle1">{productItem.name}</Typography>
-                <Typography variant="body2">
-                </Typography>
+                <Typography variant="body2"></Typography>
                 <Typography variant="body2">
                   Packages: {productItem.amount}
                 </Typography>

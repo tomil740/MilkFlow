@@ -11,12 +11,11 @@ const ProductPreviewItem: React.FC<ProductPreviewItemProps> = ({
    return (
      <div className="product-preview-item">
        <img
-         src={product.imgUrl}
+         src={`productsImages/regular/${product.imgKey}.jpg`}
          alt={product.name}
          className="product-image"
          onError={(e) => {
-           e.currentTarget.src =
-             "https://speed-market.co.il/wp-content/uploads/2020/04/7290000554457.jpg"; // Fallback image URL
+           e.currentTarget.src = `productsImages/logos/large_logo.png`;
          }}
        />
        <div className="product-info">

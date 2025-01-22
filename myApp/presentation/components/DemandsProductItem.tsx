@@ -13,13 +13,16 @@ const DemandsProductItem: React.FC<DemandsProductItemProps> = ({ product }) => {
     <div className="demands-product-item">
       {/* Product Row */}
       <div className="product-row">
-        {product.product?.imgUrl && (
-          <img
-            src={product.product?.imgUrl}
+        {product.product?.imgKey && (
+           <img
+            src={`productsImages/regular/${product.product.imgKey}.jpg`}
             alt={product.product.name}
             className="product-image"
-          />
-        )}
+            onError={(e) => {
+              e.currentTarget.src = `productsImages/logos/large_logo.png`;
+            }}
+            />
+          )}
         <div className="product-info">
           <div className="product-name">{product.product?.name}</div>
           <div className="product-id">ID: {product.productId}</div>
