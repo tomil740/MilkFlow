@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../backEnd/firebaseConfig";
+import { checkInternetConnection } from "../../data/remoteDao/util/checkInternetConnection";
+
 
 export interface UseUpdateDemandStatusResult {
-  updating: boolean;
+  updating: boolean; 
   error: string | null;
   updateStatus: (
     demandId: string,
@@ -36,7 +38,7 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
     };
 
     if (!Object.keys(validTransitions).includes(currentStatus)) {
-      setError("Invalid current status");
+      setError("מצב נוכחי אינו תקין");
       return;
     }
 
@@ -44,7 +46,14 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
       validTransitions[currentStatus as keyof typeof validTransitions] !==
       nextStatus
     ) {
-      setError("Invalid status transition");
+      setError("מעבר מצב אינו חוקי");
+      return;
+    }
+
+    // Check internet connection
+    const isConnected = await checkInternetConnection();
+    if (!isConnected) {
+      setError("אין חיבור לאינטרנט. אנא בדוק את החיבור ונסה שוב.");
       return;
     }
 
@@ -53,7 +62,7 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
 
     const timeoutPromise = new Promise<null>((_, reject) =>
       setTimeout(
-        () => reject(new Error("Timeout: Network issue or slow response")),
+        () => reject(new Error("פסק זמן: בעיית רשת או תגובה איטית")),
         TIMEOUT
       )
     );
@@ -61,6 +70,7 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
     const updateDemandStatus = async (): Promise<boolean> => {
       try {
         const demandDoc = doc(db, "Demands", demandId);
+        console.log("the status",nextStatus)
         await updateDoc(demandDoc, {
           status: nextStatus,
           updatedAt: Timestamp.now(),
@@ -69,7 +79,7 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
         return updatedDoc.exists() && updatedDoc.data()?.status === nextStatus;
       } catch (error) {
         throw new Error(
-          error instanceof Error ? error.message : "Unknown error occurred"
+          error instanceof Error ? error.message : "שגיאה לא ידועה התרחשה"
         );
       }
     };
@@ -78,7 +88,7 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
       const result = await Promise.race([updateDemandStatus(), timeoutPromise]);
       setProcessCompleted(result === true);
     } catch (error: any) {
-      setError(error.message || "Failed to update status");
+      setError(error.message || "נכשל בעדכון המצב");
     } finally {
       setUpdating(false);
     }

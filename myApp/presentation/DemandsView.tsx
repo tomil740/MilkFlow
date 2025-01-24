@@ -11,38 +11,46 @@ import TwoWaySwitch from "./components/TwoWaySwitch";
 import { Demand } from "../domain/models/Demand";
 import { useNavigate } from "react-router-dom";
 import { Typography, Dialog } from "@mui/material";
-import statusPresentation from './util/statusPresentation';
+import statusPresentation from "./util/statusPresentation";
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
   const navigate = useNavigate();
   const [status, setStatus] = useState("pending");
   const [productView, setProductView] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState(false); // Loading state for status update
 
   const isAuthenticated = Boolean(userAuth);
   const userId = isAuthenticated ? userAuth?.uid : "-1"; // Default ID for unauthenticated users
+  
+  // Using the updated hook
   const { data, loading, error, updateStatus } = useDemandsView(
     userAuth?.isDistributer || false,
-    (userId == undefined) ? "-1" : userId,
+    userId == undefined ? "-1" : userId,
     status
   );
 
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    type: "", 
+    type: "",
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const statuses = ["pending", "placed", "completed"];
 
+  // Handle errors
   useEffect(() => {
-    if (error) {
+    let isMounted = true; // Track component mount status
+    if (isMounted && error) {
       setSnackbar({
         open: true,
-        message: `Failed to load: ${error}`,
+        message: `שגיאה בטעינת הדרישות: ${error}`,
         type: "error",
       });
     }
+    return () => {
+      isMounted = false;
+    };
   }, [error]);
 
   const handleStatusChange = async (theData: Demand[]) => {
@@ -50,11 +58,7 @@ const DemandsView = () => {
 
     const nextStatus = statuses[statuses.indexOf(status) + 1];
     setDialogOpen(true);
-    setSnackbar({
-      open: true,
-      message: `Updating status to ${statusPresentation(nextStatus)}...`,
-      type: "info",
-    });
+    setLoadingStatus(true); // Start loading indicator
 
     try {
       await Promise.all(
@@ -62,18 +66,20 @@ const DemandsView = () => {
       );
       setSnackbar({
         open: true,
-        message: `Status updated to ${nextStatus}!`,
+        message: `הסטטוס עודכן ל- ${statusPresentation(nextStatus)}!`,
         type: "success",
       });
       setStatus(nextStatus);
-    } catch {
+    } catch (error: any) {
+      const errorMessage = error?.message || "שגיאה בעדכון הסטטוס";
       setSnackbar({
         open: true,
-        message: "Failed to update status",
+        message: errorMessage,
         type: "error",
       });
     } finally {
       setDialogOpen(false);
+      setLoadingStatus(false); // Stop loading indicator
     }
   };
 
@@ -169,9 +175,15 @@ const DemandsView = () => {
           <button
             className="update-status-btn"
             onClick={() => handleStatusChange(data)}
+            disabled={loadingStatus} // Disable button while loading
           >
-            עדכן סטטוס ל{" "}
-            {statusPresentation(statuses[statuses.indexOf(status) + 1])}
+            {loadingStatus ? (
+              <CircularProgress size={24} />
+            ) : (
+              `עדכן סטטוס ל ${statusPresentation(
+                statuses[statuses.indexOf(status) + 1]
+              )}`
+            )}
           </button>
         )}
     </div>

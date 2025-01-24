@@ -1,83 +1,114 @@
-import { useState, useEffect } from "react";
-import { observeDemands, updateDemandStatus } from "../../data/remoteDao/demadnsView"; 
-import { Demand } from '../models/Demand';
-import { retryOperation } from '../../data/remoteDao/util';
+import { useState, useCallback } from "react";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import {
+  fetchPaginatedDemands,
+  updateDemandStatus,
+} from "../../data/remoteDao/demadnsView";
+import { Demand } from "../models/Demand";
+import { QueryDocumentSnapshot } from "firebase/firestore";
 
- 
+// Define the expected types for the fetched paginated data
+interface PaginatedDemands {
+  demands: Demand[];
+  lastDoc: QueryDocumentSnapshot | null;
+}
+
+// Define the return types for the useDemandsView hook
 export interface UseDemandsViewResult {
   data: Demand[];
   loading: boolean;
   error: string | null;
   updateStatus: (demandId: string, nextStatus: string) => Promise<boolean>;
+  fetchNextPage: () => void; // This function doesn't need to return a Promise
+  hasNextPage: boolean;
 }
 
+// Main Hook
 export const useDemandsView = (
   isDistributer: boolean,
-  id: string, 
-  status: string
+  id: string,
+  status: string,
+  pageSize = 2 // Default page size
 ): UseDemandsViewResult => {
-  const [data, setData] = useState<Demand[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // Error state for mutation failures or unexpected errors
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (id === "-1") {
-      setError("User not authenticated");
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    const unsubscribe = observeDemands(
-      isDistributer,
-      id,
-      status,
-      (fetchedData) => {
-        setData(fetchedData);
-        setLoading(false);
+  // Infinite Query for fetching paginated demands
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isLoading: loading,
+    isError,
+    error: queryError,
+  } = useInfiniteQuery<PaginatedDemands, Error>(
+    ["demands", isDistributer, id, status],
+    ({ pageParam = null }) =>
+      fetchPaginatedDemands(isDistributer, id, status, pageSize, pageParam),
+    {
+      // Correctly define how to get the next page param (lastDoc)
+      getNextPageParam: (lastPage) => lastPage.lastDoc ?? null,
+      onError: (error: Error) => {
+        // Explicitly typing the error as Error
+        console.error("Error fetching demands:", error);
+        setError(error.message);
       },
-      (errorMessage) => {
-        setError(errorMessage); 
-        setLoading(false);
-      }
-    );
+    }
+  );
 
-    return () => unsubscribe();
-  }, [isDistributer, id, status]);
+  // Flatten paginated data for easy consumption
+  const flattenedData = data?.pages.flatMap((page) => page.demands) || [];
+
+  // Mutation for updating demand status
+  const mutation = useMutation(updateDemandStatus, {
+    onError: (error: Error) => {
+      // Explicitly typing the error as Error
+      console.error("Error updating demand status:", error);
+      setError(error.message);
+    },
+  });
 
   /**
-   * Update the status of a demand with retries and timeout handling.
-   * @param demandId - The ID of the demand to update.
-   * @param nextStatus - The next status to set.
-   * @returns Promise resolving to a boolean indicating success.
+   * Wrapper function to handle demand status update.
+   * Includes retry logic and timeout to catch network issues.
    */
-  const updateStatus = async (
-    demandId: string,
-    nextStatus: string
-  ): Promise<boolean> => {
-    const TIMEOUT = 10000; // 10 seconds timeout
+  const updateStatus = useCallback(
+    async (demandId: string, nextStatus: string): Promise<boolean> => {
+      const TIMEOUT = 10000; // 10 seconds timeout
+      setError(null); // Clear previous error
 
-    const timeoutPromise = new Promise<null>((_, reject) =>
-      setTimeout(
-        () => reject(new Error("Timeout: Network issue or slow response")),
-        TIMEOUT
-      )
-    );
+      const timeoutPromise = new Promise<null>((_, reject) =>
+        setTimeout(
+          () => reject(new Error("Timeout: Slow network response")),
+          TIMEOUT
+        )
+      );
 
-    try {
-      const result = await Promise.race([
-        retryOperation(() => updateDemandStatus(demandId, nextStatus), 3, 1000),
-        timeoutPromise,
-      ]);
+      try {
+        const result = await Promise.race([
+          mutation.mutateAsync({ demandId, nextStatus }), // Make sure the mutation accepts these parameters
+          timeoutPromise,
+        ]);
 
-      return (result!=null)?result:false;
-    } catch (error) {
-      console.error("Final failure in updateStatus:", error);
-      return false;
-    }
+        return !!result; // Return boolean indicating success
+      } catch (error) {
+        console.error("Final failure in updateStatus:", error);
+        setError(
+          error instanceof Error ? error.message : "An unknown error occurred."
+        );
+        return false;
+      }
+    },
+    [mutation]
+  );
+
+  // Return the result in the correct format
+  return {
+    data: flattenedData,
+    loading,
+    error: isError ? queryError?.message || "Failed to fetch demands." : error,
+    updateStatus,
+    fetchNextPage,
+    hasNextPage: !!hasNextPage,
   };
-
-  return { data, loading, error, updateStatus };
 };

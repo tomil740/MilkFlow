@@ -19,75 +19,34 @@ const CartScreen: React.FC = () => {
   const [selectedProduct, setSelectedProduct] =
     useState<ProductWithAmount | null>(null);
   const navigate = useNavigate();
-  
-
 
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     type: "",
   });
+
   const [showLoadingDialog, setShowLoadingDialog] = useState(false);
 
   const handleCloseDialog = () => setSelectedProduct(null);
-  /*//save cart function...
-  //disable the remote saving of the cart...
-  //const [isSaving, setIsSaving] = useState(false);
-  //const {syncCartToRemote, clearCart } = useCart();
-  const handleSaveCart = async () => {
-    if (!authUser) {
-      setSnackbar({
-        open: true,
-        message: "User not authenticated. Cannot save cart.",
-        type: "error",
-      });
-      console.log("User not authenticated. Cannot save cart.");
-      return;
-    }else if (isSaving) {
-      setSnackbar({
-        open: true,
-        message: "A save process is runing...",
-        type: "error",
-      });
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      await syncCartToRemote(authUser?.uid);
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: `Error saving cart:${error}`,
-        type: "error",
-      });
-      console.error("Error saving cart:", error);
-    } finally {
-      setSnackbar({
-        open: true,
-        message: `successfuly saved cart`,
-        type: "success",
-      });
-      setIsSaving(false);
-    }
-  };
-  */
 
   const totalItems = cartProducts.length;
 
+  // Manage the state of the demand creation process
   const handleCheckout = async () => {
     setShowLoadingDialog(true); // Show loading overlay
+    setSnackbar({ open: false, message: "", type: "" }); // Clear any previous snackbars
     try {
-      await createDemand();
+      await createDemand(); // Assuming createDemand is successful
     } catch (err) {
       console.error("Error creating demand:", err);
       setSnackbar({
         open: true,
-        message: "Failed to create demand",
+        message: "לא הצלחנו ליצור את הבקשה, אנא נסה שוב",
         type: "error",
       });
     } finally {
-      setTimeout(() => setShowLoadingDialog(false), 2000); // Hide loading dialog after timeout
+      setShowLoadingDialog(false); // Hide loading dialog
     }
   };
 
@@ -95,22 +54,22 @@ const CartScreen: React.FC = () => {
     if (data) {
       setSnackbar({
         open: true,
-        message: "Demand successfully created!",
+        message: "הבקשה נוצרה בהצלחה!",
         type: "success",
       });
-      setCartState([]); // Clear cart
-      setTimeout(() => navigateBack(), 2000);
-    } else if (error != null) {
+      setCartState([]); // Clear cart only if the demand is successfully created
+      setTimeout(() => navigateBack(), 2000); // Navigate after 2 seconds
+    } else if (error) {
       setSnackbar({
         open: true,
-        message: `Failed to create demand ${error}`,
+        message: `הייתה שגיאה ביצירת הבקשה: ${error}`,
         type: "error",
       });
     }
   }, [data, error]);
 
   const navigateBack = () => {
-    navigate("/demandsView");
+    navigate("/demandsView"); // Navigate to the demands view
   };
 
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
@@ -149,6 +108,7 @@ const CartScreen: React.FC = () => {
           </div>
         ))}
       </div>
+
       {selectedProduct && (
         <ProductDialog
           product={selectedProduct}
