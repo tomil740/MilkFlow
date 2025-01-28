@@ -31,15 +31,12 @@ function useProducts() {
 
   useEffect(() => {
     const syncProductsState = async () => {
-
-      const isLoadingProducts = (await getFromLocalStorage("products")).length;
-
-      if(isLoadingProducts != allProducts.length)
-        return;
-    
-      const allProductsLoacl =
-        allProducts.length < 15 ? await fetchProducts() : allProducts;
-
+      let allProductsLoacl = allProducts
+      if(allProducts.length < 15){
+        const isLoadingProducts = (await getFromLocalStorage("products")).length;
+        if (isLoadingProducts != allProducts.length) return;
+        allProductsLoacl = await fetchProducts();
+      }
       if (authenticatedUser) {
         if (authenticatedUser.isDistributer) {
           // Distributor: Use all products
