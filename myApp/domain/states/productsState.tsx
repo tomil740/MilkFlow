@@ -11,16 +11,26 @@ const localStorageKey = "products";
 
 export const productsState = atom<Product[]>({
   key: "productsState",
-  default: getFromLocalStorage(localStorageKey), // Default to products from localStorage or empty array
+  default: [], // Default until data is available
   effects_UNSTABLE: [
-    ({ onSet }) => {
-      // Save to localStorage whenever productsState changes
-      onSet((newState) => {
-        setToLocalStorage(localStorageKey, newState);
+    ({ setSelf, onSet }) => {
+      // Asynchronous storage fetch to initialize state
+      (async () => {
+        const storedData = await getFromLocalStorage(localStorageKey);
+        if (storedData?.length) {
+          setSelf(storedData);
+        }
+      })();
+
+      // Persist state to localStorage on changes
+      onSet(async (newState) => {
+        await setToLocalStorage(localStorageKey, newState);
       });
     },
   ],
 });
+
+
 
 export const selectedCategoryState = atom({
   key: "selectedCategoryState",

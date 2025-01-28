@@ -36,22 +36,10 @@ export const fetchPaginatedDemands = async (
   try {
     const demandsRef = collection(db, "Demands");
     const q = query(
-  demandsRef,
-  where("distributerId", "==", id),
-  where("status", "==", status),
-  orderBy("distributerId"),
-  orderBy("status"),
-  orderBy("updatedAt", "desc"),
-  orderBy("__name__"),
-
-
-    //const q = query(
-      /*
       demandsRef,
       where(isDistributer ? "distributerId" : "userId", "==", id),
       where("status", "==", status),
       orderBy("updatedAt", "desc"),
-      */
       ...(lastDoc ? [startAfter(lastDoc)] : []), // Handle pagination
       limit(50)
     );

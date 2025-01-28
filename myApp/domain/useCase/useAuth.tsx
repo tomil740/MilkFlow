@@ -12,32 +12,46 @@ import { authState } from "../states/authState";
 import { User } from "../models/User";
 
 const useAuth = () => {
-  const [user, setUser] = useRecoilState(authState);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+ const [user, setUser] = useRecoilState(authState);
+ const [loading, setLoading] = useState(false);
+ const [error, setError] = useState<string | null>(null);
 
-  const login = async (email: string, password: string) => {
-    setLoading(true);
-    setError(null);
-    let res = false
-    try {
-      const { user: firebaseUser } = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-      setUser(userDoc.data() as User);
-      res = true;
-    } catch (err: any) {
-      setError(err.message);
-      setUser(null);
-      return res
-    } finally {
-      setLoading(false);
-      return res
-    }
-  };
+ const login = async (email: string, password: string): Promise<boolean> => {
+   setLoading(true);
+   setError(null);
+   let res = false;
+
+   try {
+     const { user: firebaseUser } = await signInWithEmailAndPassword(
+       auth,
+       email,
+       password
+     );
+
+     const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+     if (userDoc.exists()) {
+       const userData = userDoc.data() as User;
+
+       // Include the current timestamp as syncedAt
+       const updatedUser = {
+         ...userData,
+         syncedAt: Date.now(), // Store timestamp for sync tracking
+       };
+
+       setUser(updatedUser);
+       res = true;
+     } else {
+       setError("User not found");
+     }
+   } catch (err: any) {
+     setError(err.message);
+     setUser(null);
+   } finally {
+     setLoading(false);
+     return res;
+   }
+ };
+
 
   const register = async (
     email: string,

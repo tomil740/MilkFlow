@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import {useSetRecoilState, useRecoilValue } from "recoil";
 import { fetchProductsFromFirestore } from "../../data/remoteDao/fetchProductsFromFirestore";
 import { Product } from "../models/Product";
 import { authState } from "../states/authState";
-import { filteredProductsState, productsState } from "../states/productsState";
+import { filteredProductsState, productsState } from "../states/productsState"; 
+import { getFromLocalStorage } from "../../data/localCacheDao/localStorageDao";
 
-function useProducts() { 
-  const allProducts = useRecoilValue(productsState)
+function useProducts() {
+  const allProducts = useRecoilValue(productsState);
   const products = useRecoilValue<Product[]>(filteredProductsState);
-  const setProducts = useRecoilState(productsState)[1];
+  const setProducts = useSetRecoilState(productsState);
   const authenticatedUser = useRecoilValue(authState); // Authenticated user state
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,17 +29,24 @@ function useProducts() {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     const syncProductsState = async () => {
-      const allProducts = await fetchProducts();
+
+      const isLoadingProducts = (await getFromLocalStorage("products")).length;
+
+      if(isLoadingProducts != allProducts.length)
+        return;
+    
+      const allProductsLoacl =
+        allProducts.length < 15 ? await fetchProducts() : allProducts;
 
       if (authenticatedUser) {
         if (authenticatedUser.isDistributer) {
           // Distributor: Use all products
-          setProducts(allProducts);
+          setProducts(allProductsLoacl);
         } else if (authenticatedUser.productsCollection) {
           // Non-distributor: Filter by `productsCollection`
-          const filtered = allProducts.filter((product) =>
+          const filtered = allProductsLoacl.filter((product) =>
             authenticatedUser.productsCollection.includes(product.id)
           );
           setProducts(filtered); // Update the single global state

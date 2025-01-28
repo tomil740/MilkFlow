@@ -6,5 +6,8 @@ export interface User {
   isDistributer: boolean;
   productsCollection:number[];
 }
+export interface AuthUser extends User {
+  syncedAt?: number; // Timestamp for sync
+}
 
 
