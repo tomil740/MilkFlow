@@ -1,5 +1,6 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
+import { User } from '../models/User';
 
 // Create the persistence handler
 const { persistAtom } = recoilPersist({
@@ -7,8 +8,14 @@ const { persistAtom } = recoilPersist({
   storage: localStorage, // Default is localStorage; you can also use sessionStorage
 });
 
-export const usersCacheState = atom<Record<string, any>>({
+interface CachedUser {
+  data: User;
+  syncedAt: number;
+}
+
+export const usersCacheState = atom<Record<string, CachedUser>>({
   key: "usersCacheState",
   default: {},
-  effects_UNSTABLE: [persistAtom], // Attach the persistence effect
+  effects_UNSTABLE: [persistAtom],
 });
+

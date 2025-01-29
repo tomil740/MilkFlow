@@ -225,3 +225,18 @@
   font-size: 14px;
   color: var(--color-on-surface);
 }
+
+.connection-status-badge {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 8px 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  font-size: 14px;
+  font-weight: bold;
+}

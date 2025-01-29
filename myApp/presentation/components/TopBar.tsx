@@ -6,20 +6,17 @@ import { useCart } from "../../domain/useCase/useCart";
 import ThemeToggleBut from "../../theme/ThemeToggleBut";
 import UserHeader from "./UserHeader";
 import "../style/TopBar.css";
+import { db } from "../../backEnd/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { User } from '../../domain/models/User';
+import ConnectionWatcher from './ConnectionWatcher';
+
+
 
 const TopBar = () => {
   const navigate = useNavigate();
   const [authUser, setAuthUser] = useRecoilState(authState);
   const { cart, initializeCart } = useCart();
-
-/*Disable the remote save of the cart...
-  useEffect(() => {
-    const initialize = async () => {
-      if (authUser) await initializeCart(authUser.uid);
-    };
-    initialize();
-  }, [authUser]);
-  */
 
   const handleNavigation = (path:string) => {
     try {
@@ -29,6 +26,42 @@ const TopBar = () => {
       alert("Navigation unavailable.");
     }
   };
+
+  useEffect(() => {
+    const syncUserIfNeeded = async () => {
+      if (!authUser || !authUser.uid) return;
+
+      const syncThreshold = 24 * 60 * 60 * 1000; // One day in milliseconds
+      const lastSynced = authUser.syncedAt || 0;
+      const timeSinceLastSync = Date.now() - lastSynced;
+
+      if (timeSinceLastSync < syncThreshold) {
+        console.log("No sync required, within sync threshold.");
+        return;
+      }
+
+      try {
+        console.log("Syncing user data from Firestore...");
+        const userDoc = await getDoc(doc(db, "users", authUser.uid));
+
+        if (userDoc.exists()) {
+          const updatedUserData = userDoc.data() as User;
+          setAuthUser({
+            ...updatedUserData,
+            syncedAt: Date.now(), // Update sync timestamp
+          });
+          console.log("User synced successfully.");
+        } else {
+          console.warn("User not found in Firestore.");
+        }
+      } catch (err) {
+        console.error("Failed to sync user data:", err);
+      }
+    };
+
+    syncUserIfNeeded();
+  }, [authUser, setAuthUser]);
+
 
   return (
     <div className="top-bar">
@@ -43,7 +76,7 @@ const TopBar = () => {
         </div>
         <ThemeToggleBut />
       </div>
-
+      <ConnectionWatcher/>
       {/* Right Section */}
       <div className="top-bar-section">
         {!authUser ? (

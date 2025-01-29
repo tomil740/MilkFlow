@@ -9,7 +9,7 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
-  Dialog,
+  Dialog, 
 } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { authState } from "../domain/states/authState";
@@ -22,15 +22,20 @@ import { useUpdateDemandStatus } from "../domain/useCase/useUpdateDemandStatus";
 import "./style/demandItemPage.css";
 import { Demand } from "../domain/models/Demand";
 import { DatePresentation } from "./components/DatePresentation";
-import statusPresentation from './util/statusPresentation';
+import statusPresentation from "./util/statusPresentation";
+import { checkInternetConnection } from "../data/remoteDao/util/checkInternetConnection";
+
 
 const DemandItemPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const auth = useRecoilValue(authState);
 
-  const [snackMessage, setSnackMessage] = useState<string | null>(null);
-  const [snackSeverity, setSnackSeverity] = useState<"success" | "error">();
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info", // 'success' | 'error' | 'info' | 'warning'
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { demand } = location.state as { demand: Demand };
@@ -51,25 +56,20 @@ const DemandItemPage: React.FC = () => {
 
   useEffect(() => {
     if (!demand) {
-      console.error("Invalid navigation state.");
-      navigate("/demands"); // Redirect to the demands list if state is missing
+      setSnackbar({
+        open: true,
+        message: "Invalid navigation state. Redirecting...",
+        severity: "error",
+      });
+      setTimeout(() => navigate("/demands"), 2000);
     }
   }, [demand, navigate]);
 
-  /*Currently cause a bug , accoridgn to the by user products filtering...
   useEffect(() => {
-    const loadProducts = async () => {
-      await fetchProducts();
-    };
-    //loadProducts();
-  }, [fetchProducts]);
-*/
-  useEffect(() => {
-    if (demand) { 
+    if (demand) {
       const mappedProducts = demand.products
         .map((item) => {
           const product = allProducts.find((p) => p.id === item.productId);
-          //need to use the fetch Products callback when a demand product Id isnt found
           return product ? { ...product, amount: item.amount } : null;
         })
         .filter((item): item is Product & { amount: number } => item !== null);
@@ -79,31 +79,54 @@ const DemandItemPage: React.FC = () => {
   }, [demand, allProducts]);
 
   const handleUpdateStatus = async () => {
+    // Step 1: Check internet connection
+    const isConnected = await checkInternetConnection();
+    if (!isConnected) {
+      setSnackbar({
+        open: true,
+        message: "אין חיבור לאינטרנט. אנא בדוק את החיבור ונסה שוב.",
+        severity: "error",
+      });
+      return; // Don't proceed with update if no connection
+    }
+
     try {
       setDialogOpen(true);
       const newStatus = demand.status === "pending" ? "placed" : "completed";
-      await updateStatus(demand.demandId, demand.status, newStatus);
+      await updateStatus(demand.id, demand.status, newStatus);
 
-      setSnackSeverity("success");
-      setTimeout(() => navigate("/demandsView"), 2000); // Delayed navigation
+      setSnackbar({
+        open: true,
+        message: "סטטוס עודכן בהצלחה!",
+        severity: "success",
+      });
+      setTimeout(() => navigate("/demandsView"), 2000);
     } catch (err) {
       console.error("Failed to update status:", err);
-      setSnackMessage("Failed to update demand status.");
-      setSnackSeverity("error");
+      setSnackbar({
+        open: true,
+        message: "נכשל בעדכון המצב",
+        severity: "error",
+      });
     } finally {
       setDialogOpen(false);
     }
   };
 
+  const handleSnackbarClose = () =>
+    setSnackbar({ ...snackbar, open: false, message: "" });
+
   return (
     <div className="demand-page-container">
+      {/* Loading Dialog */}
       <Dialog open={dialogOpen}>
         <div className="loading-dialog">
           <CircularProgress />
-          <Typography variant="body1">Updating demand status...</Typography>
+          <Typography variant="body1">עדכון סטטוס דרישה...</Typography>
         </div>
       </Dialog>
 
+      {/* Demand Header */}
       <Card className="demand-header">
         <CardContent>
           <div className="demand-header-row">
@@ -129,10 +152,11 @@ const DemandItemPage: React.FC = () => {
 
       <Divider sx={{ my: 2 }} />
 
+      {/* Product List */}
       {productsLoading ? (
         <div className="loading-container">
           <CircularProgress />
-          <Typography variant="body2">Loading products...</Typography>
+          <Typography variant="body2">טעינת מוצרים...</Typography>
         </div>
       ) : (
         <List className="demand-products-list">
@@ -148,9 +172,8 @@ const DemandItemPage: React.FC = () => {
               />
               <div className="product-details">
                 <Typography variant="subtitle1">{productItem.name}</Typography>
-                <Typography variant="body2"></Typography>
                 <Typography variant="body2">
-                  Packages: {productItem.amount}
+                  חבילות: {productItem.amount}
                 </Typography>
               </div>
             </ListItem>
@@ -158,24 +181,32 @@ const DemandItemPage: React.FC = () => {
         </List>
       )}
 
+      {/* Snackbar for Feedback */}
       <Snackbar
-        open={Boolean(snackMessage)}
-        autoHideDuration={2000}
-        onClose={() => setSnackMessage(null)}
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert severity={snackSeverity} onClose={() => setSnackMessage(null)}>
-          {snackMessage}
+        <Alert
+          severity={
+            snackbar.severity as "success" | "error" | "info" | "warning"
+          }
+          onClose={handleSnackbarClose}
+        >
+          {snackbar.message}
         </Alert>
       </Snackbar>
 
+      {/* Update Status Button */}
       {auth?.isDistributer && demand.status !== "completed" && (
-        <div className="update-status-button-Container">
+        <div className="update-status-button-container">
           <Button
             variant="contained"
             color="primary"
             className="update-status-button"
             onClick={handleUpdateStatus}
-            disabled={updating || processCompleted} // Disable button if updating or process is completed
+            disabled={updating || processCompleted}
           >
             {demand.status === "pending"
               ? "עדכן סטטוס ל חלוקה"

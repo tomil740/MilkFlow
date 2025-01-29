@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../backEnd/firebaseConfig";
+import { checkInternetConnection } from "../../data/remoteDao/util/checkInternetConnection";
+
 
 export interface UseUpdateDemandStatusResult {
-  updating: boolean;
+  updating: boolean; 
   error: string | null;
   updateStatus: (
     demandId: string,
     currentStatus: string,
     nextStatus: string
   ) => Promise<void>;
-  processCompleted: boolean;
+  processCompleted: boolean; 
 }
 
 export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
@@ -29,14 +31,14 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
   ) => {
     if (updating || processCompleted) return;
 
-    const TIMEOUT = 10000; // 10 seconds timeout
+    const TIMEOUT = 10000;
     const validTransitions: { [key in "pending" | "placed"]: string } = {
       pending: "placed",
       placed: "completed",
     };
 
-    if (!Object.keys(validTransitions).includes(currentStatus)) {
-      setError("Invalid current status");
+    if (!validTransitions[currentStatus as keyof typeof validTransitions]) {
+      setError("מצב נוכחי אינו תקין");
       return;
     }
 
@@ -44,7 +46,13 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
       validTransitions[currentStatus as keyof typeof validTransitions] !==
       nextStatus
     ) {
-      setError("Invalid status transition");
+      setError("מעבר מצב אינו חוקי");
+      return;
+    }
+
+    const isConnected = await checkInternetConnection();
+    if (!isConnected) {
+      setError("אין חיבור לאינטרנט. אנא בדוק את החיבור ונסה שוב.");
       return;
     }
 
@@ -53,32 +61,34 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
 
     const timeoutPromise = new Promise<null>((_, reject) =>
       setTimeout(
-        () => reject(new Error("Timeout: Network issue or slow response")),
+        () => reject(new Error("פסק זמן: בעיית רשת או תגובה איטית")),
         TIMEOUT
       )
     );
 
-    const updateDemandStatus = async (): Promise<boolean> => {
-      try {
-        const demandDoc = doc(db, "Demands", demandId);
+    try {
+      const demandDoc = doc(db, "Demands", demandId);
+
+      // Perform update and check if status was successfully set
+      const updateAndValidateStatus = async (): Promise<boolean> => {
         await updateDoc(demandDoc, {
           status: nextStatus,
           updatedAt: Timestamp.now(),
         });
+
         const updatedDoc = await getDoc(demandDoc);
         return updatedDoc.exists() && updatedDoc.data()?.status === nextStatus;
-      } catch (error) {
-        throw new Error(
-          error instanceof Error ? error.message : "Unknown error occurred"
-        );
-      }
-    };
+      };
 
-    try {
-      const result = await Promise.race([updateDemandStatus(), timeoutPromise]);
+      const result = await Promise.race([
+        updateAndValidateStatus(),
+        timeoutPromise,
+      ]);
       setProcessCompleted(result === true);
+
+      
     } catch (error: any) {
-      setError(error.message || "Failed to update status");
+      setError(error.message || "נכשל בעדכון המצב");
     } finally {
       setUpdating(false);
     }
@@ -86,3 +96,4 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
 
   return { updating, error, updateStatus, processCompleted };
 };
+

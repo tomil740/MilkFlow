@@ -4,7 +4,7 @@ import UserHeader from "./UserHeader";
 
 
 
-interface DemandsProductItemProps {
+interface DemandsProductItemProps { 
   product: SummarizedProduct;
 }
 

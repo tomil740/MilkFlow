@@ -10,7 +10,7 @@ export const useDemandsByProducts = (demands: Demand[]) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const { allProducts, fetchProducts } = useProducts();
-
+  
 
   useEffect(() => {
     const summarizeDemandsByProducts = async () => {
