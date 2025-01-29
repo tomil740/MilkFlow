@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import {
+import { 
   fetchPaginatedDemands,
   updateDemandStatus,
 } from "../../data/remoteDao/demadnsView";
@@ -36,13 +36,13 @@ export const useDemandsView = (
   // Infinite Query for fetching paginated demands
   const {
     data,
-    fetchNextPage,
+    fetchNextPage, 
     hasNextPage,
-    isLoading: loading,
+    isLoading: loading, 
     isError,
     error: queryError,
   } = useInfiniteQuery<PaginatedDemands, Error>(
-    ["demands", isDistributer, id, status],
+    ["demands", isDistributer, id, status], 
     ({ pageParam = null }) =>
       fetchPaginatedDemands(isDistributer, id, status, pageSize, pageParam),
     {

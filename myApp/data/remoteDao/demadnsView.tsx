@@ -6,10 +6,10 @@ import {
   onSnapshot,
   updateDoc,
   doc,
-  FirestoreError,
+  FirestoreError, 
   Timestamp,
   getDocs,
-  startAfter,
+  startAfter, 
   limit,
   getDoc,
   QueryDocumentSnapshot,
@@ -135,7 +135,7 @@ export const updateDemandStatus = async ({
     await updateDoc(demandDoc, {
       status: nextStatus,
       updatedAt: Timestamp.now(),
-    });
+    }); 
     console.log("Updated demand successfully:", demandId);
 
     if (verify) {

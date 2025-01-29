@@ -51,7 +51,7 @@ export const useCreateDemand = () => {
 
       // Build demand object
       const demand: Demand = {
-        demandId: "",
+        id: "",
         userId: userAuth.uid,
         distributerId: userAuth.distributerId,
         status: "pending",

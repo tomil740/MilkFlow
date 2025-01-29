@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useDemandsView } from "../domain/useCase/useDemandsView";
-import { useRecoilValue } from "recoil";
 import { authState } from "../domain/states/authState";
 import DemandPreviewItem from "./components/DemandPreviewItem";
+import { useRecoilValue } from "recoil";
 import "./style/demandsFeature.css";
 import { DemandsProductView } from "./components/DemandsProductView";
 import TwoWaySwitch from "./components/TwoWaySwitch";
@@ -12,6 +11,11 @@ import { Demand } from "../domain/models/Demand";
 import { useNavigate } from "react-router-dom";
 import { Typography, Dialog } from "@mui/material";
 import statusPresentation from "./util/statusPresentation";
+import { useDemandsSync } from "../domain/useCase/useDemandsSync";
+import { MdOutlineWifiOff } from "react-icons/md";
+import { checkInternetConnection } from "../data/remoteDao/util/checkInternetConnection";
+import { FaWifi} from "react-icons/fa"; // You can use other icons from react-icons
+
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
@@ -19,16 +23,20 @@ const DemandsView = () => {
   const [status, setStatus] = useState("pending");
   const [productView, setProductView] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState(false); // Loading state for status update
+  const [isConnected, setIsConnected] = useState(true); // Track connection state
 
   const isAuthenticated = Boolean(userAuth);
   const userId = isAuthenticated ? userAuth?.uid : "-1"; // Default ID for unauthenticated users
-  
+
   // Using the updated hook
-  const { data, loading, error, updateStatus } = useDemandsView(
-    userAuth?.isDistributer || false,
-    userId == undefined ? "-1" : userId,
-    status
-  );
+  const {
+    activeDemands,
+    pendingDemands,
+    completedDemands,
+    loading,
+    error,
+    updateStatus,
+  } = useDemandsSync();
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -38,20 +46,28 @@ const DemandsView = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const statuses = ["pending", "placed", "completed"];
 
-  // Handle errors
   useEffect(() => {
-    let isMounted = true; // Track component mount status
-    if (isMounted && error) {
-      setSnackbar({
-        open: true,
-        message: `שגיאה בטעינת הדרישות: ${error}`,
-        type: "error",
-      });
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [error]);
+    // Periodically check connection status
+    const interval = setInterval(async () => {
+      const online = await checkInternetConnection();
+      if (online !== isConnected) {
+        setIsConnected(online);
+
+        if (online) {
+          setSnackbar({
+            open: true,
+            message: "🔄 החיבור חודש, מסנכרן נתונים כעת...",
+            type: "success",
+          });
+          // Refresh demands when back online
+
+          //refreshDemands();
+        }
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isConnected]);
 
   const handleStatusChange = async (theData: Demand[]) => {
     if (!userAuth?.isDistributer || status === "completed") return;
@@ -62,7 +78,7 @@ const DemandsView = () => {
 
     try {
       await Promise.all(
-        theData.map((demand) => updateStatus(demand.demandId, nextStatus))
+        theData.map((demand) => updateStatus(demand.id, nextStatus))
       );
       setSnackbar({
         open: true,
@@ -83,11 +99,21 @@ const DemandsView = () => {
     }
   };
 
-  const handleCloseSnackbar = () =>
-    setSnackbar((prev) => ({ ...prev, open: false }));
-
   const handleDemandClick = (demand: Demand) => {
-    navigate(`/Demand/${demand.demandId}`, { state: { demand } });
+    navigate(`/Demand/${demand.id}`, { state: { demand } });
+  };
+
+  const getMatchedData = () => {
+    switch (status) {
+      case "pending":
+        return pendingDemands;
+      case "placed":
+        return activeDemands;
+      case "completed":
+        return completedDemands;
+      default:
+        return [];
+    }
   };
 
   return (
@@ -116,14 +142,17 @@ const DemandsView = () => {
         </div>
       </div>
 
+      {!isConnected && (
+        <div className="connection-status-badge">
+          <MdOutlineWifiOff color="red" size={24} />
+          <span>אין חיבור לאינטרנט - הנתונים עשויים להיות לא מעודכנים</span>
+        </div>
+      )}
+
       {loading && (
         <div className="loading-overlay">
           <CircularProgress />
         </div>
-      )}
-
-      {error && (
-        <Typography variant="h6">שגיאה בטעינת הדרישות, {error}</Typography>
       )}
 
       {snackbar.open && (
@@ -131,50 +160,56 @@ const DemandsView = () => {
           open={snackbar.open}
           message={snackbar.message}
           autoHideDuration={3000}
-          onClose={handleCloseSnackbar}
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
           className={`snackbar-${snackbar.type}`}
         />
       )}
 
       <div className="demands-list">
-        {data?.length > 0 && isAuthenticated && !loading ? (
-          <>
-            <div className="switchContainer">
-              <TwoWaySwitch value={productView} onChange={setProductView} />
-            </div>
-            {productView ? (
-              <DemandsProductView demands={data} />
-            ) : (
-              data.map((demand) => (
-                <DemandPreviewItem
-                  key={demand.demandId}
-                  uid={
-                    userAuth?.isDistributer
-                      ? demand.userId
-                      : demand.distributerId!
-                  }
-                  amount={demand.products.length}
-                  lastUpdate={demand.updatedAt}
-                  status={demand.status}
-                  onClick1={() => handleDemandClick(demand)}
-                />
-              ))
-            )}
-          </>
+        {isAuthenticated ? (
+          getMatchedData()?.length > 0 && !loading ? (
+            <>
+              <div className="switchContainer">
+                <TwoWaySwitch value={productView} onChange={setProductView} />
+              </div>
+              {productView ? (
+                <DemandsProductView demands={getMatchedData()} />
+              ) : (
+                getMatchedData().map((demand: Demand) => (
+                  <DemandPreviewItem
+                    key={demand.id}
+                    uid={
+                      userAuth?.isDistributer
+                        ? demand.userId
+                        : demand.distributerId!
+                    }
+                    amount={demand.products.length}
+                    lastUpdate={demand.updatedAt}
+                    status={demand.status}
+                    onClick1={() => handleDemandClick(demand)}
+                  />
+                ))
+              )}
+            </>
+          ) : (
+            <Typography variant="h6">
+              אין דרישות מתאימות לסטטוס הנבחר...
+            </Typography>
+          )
         ) : (
           <Typography variant="h6">
-            אין דרישות מתאימות לסטטוס הנבחר...
+            משתמש לא מזוהה. אנא התחבר כדי לראות דרישות.
           </Typography>
         )}
       </div>
 
       {userAuth?.isDistributer &&
         status !== "completed" &&
-        data?.length > 0 && (
+        getMatchedData()?.length > 0 && (
           <button
             className="update-status-btn"
-            onClick={() => handleStatusChange(data)}
+            onClick={() => handleStatusChange(getMatchedData())}
             disabled={loadingStatus} // Disable button while loading
           >
             {loadingStatus ? (

@@ -9,7 +9,7 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
-  Dialog,
+  Dialog, 
 } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { authState } from "../domain/states/authState";
@@ -93,7 +93,7 @@ const DemandItemPage: React.FC = () => {
     try {
       setDialogOpen(true);
       const newStatus = demand.status === "pending" ? "placed" : "completed";
-      await updateStatus(demand.demandId, demand.status, newStatus);
+      await updateStatus(demand.id, demand.status, newStatus);
 
       setSnackbar({
         open: true,

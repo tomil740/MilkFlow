@@ -2,7 +2,7 @@ import { CartItem } from './CartItem';
 
 
 export interface Demand {
-  demandId:string;
+  id:string;
   userId: string;
   distributerId: string | null;
   status: "pending" | "placed" | "completed";

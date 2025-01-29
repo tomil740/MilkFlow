@@ -12,7 +12,7 @@ export interface UseUpdateDemandStatusResult {
     currentStatus: string,
     nextStatus: string
   ) => Promise<void>;
-  processCompleted: boolean;
+  processCompleted: boolean; 
 }
 
 export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
@@ -31,13 +31,13 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
   ) => {
     if (updating || processCompleted) return;
 
-    const TIMEOUT = 10000; // 10 seconds timeout
+    const TIMEOUT = 10000;
     const validTransitions: { [key in "pending" | "placed"]: string } = {
       pending: "placed",
       placed: "completed",
     };
 
-    if (!Object.keys(validTransitions).includes(currentStatus)) {
+    if (!validTransitions[currentStatus as keyof typeof validTransitions]) {
       setError("מצב נוכחי אינו תקין");
       return;
     }
@@ -50,7 +50,6 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
       return;
     }
 
-    // Check internet connection
     const isConnected = await checkInternetConnection();
     if (!isConnected) {
       setError("אין חיבור לאינטרנט. אנא בדוק את החיבור ונסה שוב.");
@@ -67,26 +66,27 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
       )
     );
 
-    const updateDemandStatus = async (): Promise<boolean> => {
-      try {
-        const demandDoc = doc(db, "Demands", demandId);
-        console.log("the status",nextStatus)
+    try {
+      const demandDoc = doc(db, "Demands", demandId);
+
+      // Perform update and check if status was successfully set
+      const updateAndValidateStatus = async (): Promise<boolean> => {
         await updateDoc(demandDoc, {
           status: nextStatus,
           updatedAt: Timestamp.now(),
         });
+
         const updatedDoc = await getDoc(demandDoc);
         return updatedDoc.exists() && updatedDoc.data()?.status === nextStatus;
-      } catch (error) {
-        throw new Error(
-          error instanceof Error ? error.message : "שגיאה לא ידועה התרחשה"
-        );
-      }
-    };
+      };
 
-    try {
-      const result = await Promise.race([updateDemandStatus(), timeoutPromise]);
+      const result = await Promise.race([
+        updateAndValidateStatus(),
+        timeoutPromise,
+      ]);
       setProcessCompleted(result === true);
+
+      
     } catch (error: any) {
       setError(error.message || "נכשל בעדכון המצב");
     } finally {
@@ -96,3 +96,4 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
 
   return { updating, error, updateStatus, processCompleted };
 };
+

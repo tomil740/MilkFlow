@@ -9,6 +9,7 @@ import "../style/TopBar.css";
 import { db } from "../../backEnd/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { User } from '../../domain/models/User';
+import ConnectionWatcher from './ConnectionWatcher';
 
 
 
@@ -75,7 +76,7 @@ const TopBar = () => {
         </div>
         <ThemeToggleBut />
       </div>
-
+      <ConnectionWatcher/>
       {/* Right Section */}
       <div className="top-bar-section">
         {!authUser ? (
@@ -86,7 +87,7 @@ const TopBar = () => {
             Login
           </button>
         ) : (
-          <> 
+          <>
             <UserHeader userId={authUser.uid} />
             {!authUser.isDistributer && (
               <div
