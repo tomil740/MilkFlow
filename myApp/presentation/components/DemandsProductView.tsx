@@ -4,10 +4,12 @@ import DemandsProductItem from './DemandsProductItem';
 
 interface DemandsProductViewProps {
   demands: Demand[]; // Assuming Demand is the type of the demands collection
+  isDistributer:boolean;
 }
 
 export const DemandsProductView: React.FC<DemandsProductViewProps> = ({
-  demands, 
+  demands,
+  isDistributer,
 }) => {
   const {
     loading,
@@ -21,7 +23,11 @@ export const DemandsProductView: React.FC<DemandsProductViewProps> = ({
   return (
     <div className="demands-product-view">
       {productsSummary.map((product) => (
-        <DemandsProductItem key={product.productId} product={product} />
+        <DemandsProductItem
+          key={product.productId}
+          product={product}
+          isDistributer={isDistributer}
+        />
       ))}
     </div>
   );

@@ -89,10 +89,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
           <h2>{product.name}</h2>
           <p className="product-dialog-description">{product.description}</p>
 
-          <BarcodeComponent value={product.barcode} />
-
           <p className="product-dialog-weight">
-            משקל: <strong>{product.weight} ק"ג</strong>
+            קטגורית מוצר: <strong>{product.category}</strong>
           </p>
         </div>
         <div className="amount-picker">
@@ -106,10 +104,10 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
           <button onClick={handleIncrease}>+</button>
         </div>
         <p className="product-dialog-items">
-          <strong>{product.itemsPerPackage}</strong> יחידות בכל חבילה
+          <strong>{product.itemsPerPackage}</strong> יחידות בכל אריזה
         </p>
         <span>
-          {amount} חבילות ({amount * product.itemsPerPackage})
+          {amount} אריזות ({amount * product.itemsPerPackage})
         </span>
         {/* Conditional rendering for action buttons */}
         {!isCartItem ? (

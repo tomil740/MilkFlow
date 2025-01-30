@@ -8,13 +8,13 @@ import UserHeader from "./UserHeader";
 import "../style/TopBar.css";
 import { db } from "../../backEnd/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
-import { User } from '../../domain/models/User';
+import { User } from '../../domain/models/User'; 
 import ConnectionWatcher from './ConnectionWatcher';
 
 
 
 const TopBar = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const [authUser, setAuthUser] = useRecoilState(authState);
   const { cart, initializeCart } = useCart();
 
@@ -65,54 +65,82 @@ const TopBar = () => {
 
   return (
     <div className="top-bar">
+      {/* Top Icons Section */}
+      <div className="top-icons-wrapper">
+        <ThemeToggleBut />
+        <ConnectionWatcher />
+      </div>
+
       {/* Left Section */}
       <div className="top-bar-section">
-        <div
-          className="icon-button"
+        <ActionButton
+          icon="🛍️"
+          label="כל המוצרים"
           onClick={() => handleNavigation("/")}
-          title="ProductsCatalog"
-        >
-          🛍️
-        </div>
-        <ThemeToggleBut />
+        />
       </div>
-      <ConnectionWatcher/>
-      {/* Right Section */}
-      <div className="top-bar-section">
-        {!authUser ? (
-          <button
-            className="nav-button"
-            onClick={() => handleNavigation("/login")}
-          >
-            Login
-          </button>
-        ) : (
-          <>
-            <UserHeader userId={authUser.uid} />
-            {!authUser.isDistributer && (
-              <div
-                className="icon-button"
-                onClick={() => handleNavigation("/cart")}
-                title="Go to Cart"
-              >
-                🛒 ({cart?.length || 0})
-              </div>
-            )}
-            <button className="nav-button" onClick={() => setAuthUser(null)}>
-              Logout
-            </button>
+
+      {!authUser ? (
+        <button
+          className="nav-button styled-button"
+          onClick={() => handleNavigation("/login")}
+        >
+          🔐 Login
+        </button>
+      ) : (
+        <>
+          <UserHeader userId={authUser.uid} />
+          {!authUser.isDistributer && (
             <div
               className="icon-button"
-              onClick={() => handleNavigation("/demandsView")}
-              title="Demand Manager"
+              onClick={() => handleNavigation("/cart")}
+              title="Go to Cart"
             >
-              📋
+              🛒
+              <span className="cart-count">{cart?.length || 0}</span>
             </div>
-          </>
-        )}
-      </div>
+          )}
+          <button
+            className="nav-button styled-button"
+            onClick={() => setAuthUser(null)}
+          >
+            🚪 Logout
+          </button>
+          {/* Right Section */}
+          <div className="top-bar-section">
+            <ActionButton
+              icon="📋"
+              label={authUser.isDistributer ? "מנהל הזמנות" : "ההזמנות שלי"}
+              onClick={() => handleNavigation("/demandsView")}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
 export default TopBar;
+
+import React from "react";
+
+interface ActionButtonProps {
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+}
+
+const ActionButton: React.FC<ActionButtonProps> = ({
+  icon,
+  label,
+  onClick,
+}) => {
+  return (
+    <div className="action-button" onClick={onClick}>
+      <div className="action-icon">{icon}</div>
+      <span className="action-label">{label}</span>
+    </div>
+  );
+};
+
+
