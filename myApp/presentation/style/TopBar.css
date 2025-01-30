@@ -21,6 +21,39 @@
   transition: background-color 0.2s, box-shadow 0.2s;
 }
 
+/* Buttons and Icons */
+.styled-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* Space between icon and text */
+  padding: 10px 14px;
+  background-color: var(--color-outline-variant);
+  color: var(--color-on-surface-variant);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.styled-button:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.styled-button:active {
+  background-color: var(--color-primary-dark);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.styled-button svg {
+  font-size: 1.2rem;
+}
+
+
 .nav-button:hover {
   background-color: var(--color-primary);
   color: var(--color-on-primary);
@@ -65,6 +98,7 @@
 
 /* TopBar Styles */
 .top-bar {
+  position: relative;
   display: flex;
   overflow-x: scroll;
   justify-content: space-between;
@@ -141,6 +175,53 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) inset; /* Subtle inset shadow */
 }
 
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background-color: var(--color-surface-variant);
+  color: var(--color-on-surface);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  max-width: 80px;
+  text-align: center;
+}
+
+.action-button:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-on-secondary);
+  transform: scale(1.1);
+}
+
+.action-icon {
+  font-size: 1.8rem;
+}
+
+.action-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.top-icons-wrapper {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.top-icons-wrapper > * {
+  margin: 0 8px;
+  font-size: 1.2rem; /* Ensures small size for icons */
+}
+
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -157,9 +238,20 @@
 
   .logo {
     font-size: 1.5rem;
-  }
+  } 
   .login-button {
     font-size: 1.1rem;
     padding: 10px 20px;
+  }
+  .action-button {
+    padding: 12px;
+  }
+
+  .action-icon {
+    font-size: 2rem;
+  }
+
+  .action-label {
+    font-size: 1rem;
   }
 }

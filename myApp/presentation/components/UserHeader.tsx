@@ -1,12 +1,13 @@
 import useGetUserById from "../../domain/useCase/useGetUserById";
+import PersonPinIcon from "@mui/icons-material/PersonPin"; // Correct import
 
 const styles1 = {
   profileImage: {
-    width: "50px", // Set your desired width
-    height: "50px", // Set your desired height
-    borderRadius: "50%", // If you want to make it circular
-    marginRight: "10px", // Example margin
-    objectFit: "cover" as "cover", // Explicitly cast 'cover' as 'cover' type
+    width: "50px",
+    height: "50px",
+    borderRadius: "50%",
+    marginRight: "10px",
+    objectFit: "cover" as "cover",
   },
 };
 
@@ -15,9 +16,7 @@ interface UserHeaderProps {
 }
 
 const UserHeader: React.FC<UserHeaderProps> = ({ userId }) => {
-
   let { loading, error, data } = useGetUserById(userId);
-
 
   if (loading) {
     return <div style={styles.container}>Loading...</div>;
@@ -32,12 +31,13 @@ const UserHeader: React.FC<UserHeaderProps> = ({ userId }) => {
   }
 
   if (!data || userId == null) {
-    return null; // No user data available
+    return null;
   }
 
   return (
     <div style={styles.container}>
-      <p style={styles.userName}>{data.name}</p>
+      <h1 style={styles.userName}>{data.name}</h1>
+      <PersonPinIcon style={styles.icon} /> {/* Using PersonPinIcon */}
     </div>
   );
 };
@@ -46,26 +46,28 @@ const styles = {
   container: {
     display: "flex",
     alignItems: "center",
-    padding: "8px",
-    borderRadius: "4px",
-    backgroundColor: "var(--md-sys-color-surface-variant)", // Material 3 theme surface variant
+    padding: "0px 12px",
+    borderRadius: "16px",
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backdropFilter: "blur(8px)",
   },
-  profileImage: {
-    width: "40px",
-    height: "40px",
-    borderRadius: "50%",
-    marginRight: "8px",
-    objectFit: "cover",
+  icon: {
+    fontSize: "18px", // Small icon size
+    marginRight: "8px", // Space between the icon and user name
+    color: "var(--color-primary)", // Match the icon color with the primary theme color
   },
   userName: {
     fontSize: "16px",
     fontWeight: "500",
-    color: "var(--md-sys-color-on-surface)", // Material 3 theme on-surface color
+    color: "var(--color-on-surface)", // Ensure text color matches theme
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
   },
   errorText: {
     fontSize: "16px",
     fontWeight: "500",
-    color: "var(--md-sys-color-error)", // Material 3 theme error color
+    color: "var(--md-sys-color-error)",
   },
 };
 
