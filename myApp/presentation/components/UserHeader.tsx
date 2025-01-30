@@ -48,7 +48,6 @@ const styles = {
     alignItems: "center",
     padding: "0px 12px",
     borderRadius: "16px",
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
     backdropFilter: "blur(8px)",
   },
   icon: {

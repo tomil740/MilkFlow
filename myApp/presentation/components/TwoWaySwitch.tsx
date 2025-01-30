@@ -1,5 +1,5 @@
 import React from "react";
-import "../style/utilSwitch.css"
+import "../style/utilSwitch.css";
 
 interface TwoWaySwitchProps {
   value: boolean; // true for "Product", false for "Demand"
@@ -11,17 +11,17 @@ const TwoWaySwitch: React.FC<TwoWaySwitchProps> = ({ value, onChange }) => {
     <div className="two-way-switch">
       <button
         className={`switch-option ${value ? "active" : ""}`}
-        onClick={() => onChange(true)}
+        onClick={() => value && onChange(false)} // Only trigger when inactive
         aria-pressed={value}
       >
-        תצוגת דרישה
+         📝 סיכום הזמנות
       </button>
       <button
         className={`switch-option ${!value ? "active" : ""}`}
-        onClick={() => onChange(false)}
+        onClick={() => !value && onChange(true)} // Only trigger when active
         aria-pressed={!value}
       >
-        תצוגת מוצר
+        🛍️ סיכום מוצרים
       </button>
       <div
         className="switch-indicator"

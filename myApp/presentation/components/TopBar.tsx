@@ -96,7 +96,8 @@ const TopBar = () => {
               onClick={() => handleNavigation("/cart")}
               title="Go to Cart"
             >
-              🛒 ({cart?.length || 0})
+              🛒
+              <span className="cart-count">{cart?.length || 0}</span>
             </div>
           )}
           <button

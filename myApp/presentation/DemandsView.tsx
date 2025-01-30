@@ -14,7 +14,6 @@ import statusPresentation from "./util/statusPresentation";
 import { useDemandsSync } from "../domain/useCase/useDemandsSync";
 import { MdOutlineWifiOff } from "react-icons/md";
 import { checkInternetConnection } from "../data/remoteDao/util/checkInternetConnection";
-import { FaWifi} from "react-icons/fa"; // You can use other icons from react-icons
 
 
 const DemandsView = () => {
@@ -114,7 +113,7 @@ const DemandsView = () => {
       default:
         return [];
     }
-  };
+  }; 
 
   return (
     <div className={`demands-view-container status-${status}`}>
@@ -125,10 +124,12 @@ const DemandsView = () => {
         </div>
       </Dialog>
 
-      <header className="demands-header">מנהל דרישות</header>
+      <header className="demands-header">
+        {userAuth?.isDistributer ? "מנהל הזמנות" : "ההזמנות שלי"}
+      </header>
 
       <div className="status-menu-container">
-        <div className="status-menu-header">סינון לפי סטטוס</div>
+        <div className="status-menu-header">סטטוס</div>
         <div className="status-menu">
           {statuses.map((s) => (
             <button
@@ -174,7 +175,7 @@ const DemandsView = () => {
                 <TwoWaySwitch value={productView} onChange={setProductView} />
               </div>
               {productView ? (
-                <DemandsProductView demands={getMatchedData()} />
+                <DemandsProductView demands={getMatchedData()} isDistributer ={userAuth?.isDistributer ? userAuth.isDistributer : false}/>
               ) : (
                 getMatchedData().map((demand: Demand) => (
                   <DemandPreviewItem
