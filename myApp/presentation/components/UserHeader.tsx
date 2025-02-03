@@ -5,7 +5,7 @@ const styles1 = {
   profileImage: {
     width: "50px",
     height: "50px",
-    borderRadius: "50%",
+    borderRadius: "50%", 
     marginRight: "10px",
     objectFit: "cover" as "cover",
   },
@@ -14,7 +14,7 @@ const styles1 = {
 interface UserHeaderProps {
   userId: string;
 }
-
+ 
 const UserHeader: React.FC<UserHeaderProps> = ({ userId }) => {
   let { loading, error, data } = useGetUserById(userId);
 
