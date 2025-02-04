@@ -371,3 +371,13 @@ body{
   backdrop-filter: blur(4px); /* Optional blur for added depth */
 }
 
+.empty-products-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: 1.2rem;
+  color: var(--color-on-background);
+  text-align: center;
+}
+
