@@ -18,7 +18,7 @@ import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 
 const ProductsCatalog: React.FC = () => {
-  const { products, loading, error } = useProducts();
+  const {products, loading, error } = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const authState1 = useRecoilValue(authState);
   const addToCart = useAddToCart();
@@ -60,18 +60,30 @@ const ProductsCatalog: React.FC = () => {
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
           />
         )}
-        <Grid container spacing={2}>
-          {products.map((product) => (
-            <Grid item xs={6} sm={4} md={3} key={product.id}>
-              <div onClick={() => handleProductClick(product)}>
-                <ProductPreviewItem
-                  product={product}
-                  onClick={() => handleProductClick(product)}
-                />
-              </div>
-            </Grid>
-          ))}
-        </Grid>
+
+        {products.length > 0 ? (
+          <Grid container spacing={2}>
+            {products.map((product) => (
+              <Grid item xs={6} sm={4} md={3} key={product.id}>
+                <div onClick={() => handleProductClick(product)}>
+                  <ProductPreviewItem
+                    product={product}
+                    onClick={() => handleProductClick(product)}
+                  />
+                </div>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <div className="empty-products-message">
+            {authState1 ? (
+              <p>There are no matched products to the picked category.</p>
+            ) : (
+              <p>Please authenticate to observe your products.</p>
+            )}
+          </div>
+        )}
+
         {selectedProduct && (
           <ProductDialog
             product={selectedProduct}
@@ -114,6 +126,7 @@ const ProductsCatalog: React.FC = () => {
       </div>
     </>
   );
+
 };
 
 export default ProductsCatalog;

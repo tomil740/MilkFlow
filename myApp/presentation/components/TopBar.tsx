@@ -81,12 +81,16 @@ const TopBar = () => {
       </div>
 
       {!authUser ? (
-        <button
-          className="nav-button styled-button"
-          onClick={() => handleNavigation("/login")}
-        >
-          🔐 Login
-        </button>
+        <div className="guest-presentation">
+          <span className="guest-message">Hay guest</span>
+
+          <button
+            className="nav-button styled-button login-guest-button"
+            onClick={() => handleNavigation("/login")}
+          >
+            🔐 Login to get your data
+          </button>
+        </div>
       ) : (
         <>
           <UserHeader userId={authUser.uid} />
@@ -118,6 +122,7 @@ const TopBar = () => {
       )}
     </div>
   );
+
 };
 
 export default TopBar;

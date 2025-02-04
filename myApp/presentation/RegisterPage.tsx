@@ -82,13 +82,6 @@ const RegisterPage: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           className="form-input"
         />
-        <input
-          type="text"
-          placeholder="Profile Image URL"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          className="form-input"
-        />
         {formError && <p className="error-message">{formError}</p>}
         {error && <p className="error-message">Error: {error}</p>}
         <button type="submit" className="submit-button" disabled={loading}>

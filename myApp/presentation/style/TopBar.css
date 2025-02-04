@@ -76,8 +76,8 @@
 
 .cart-count {
   position: absolute;
-  top: -8px;  /* Move the number slightly above the icon */
-  left: -6px;  /* Move the number a bit to the left of the icon */
+  top: 5px;  /* Move the number slightly above the icon */
+  left: -4px;  /* Move the number a bit to the left of the icon */
   font-size: 0.75rem;  /* Small but legible number */
   font-weight: bold;
   color: var(--color-primary);  /* Matching primary color */
@@ -210,6 +210,40 @@
 .top-icons-wrapper > * {
   margin: 0 8px;
   font-size: 1.2rem; /* Ensures small size for icons */
+}
+
+.guest-presentation {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.login-guest-button {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 768px) {
+  .guest-presentation {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .login-guest-button {
+    white-space: normal;
+    max-width: 100%;
+  }
+
+  
+}
+@media screen and (max-width: 400px) {
+  .guest-message{
+      visibility: hidden;
+    }
 }
 
 
