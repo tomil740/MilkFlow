@@ -66,6 +66,12 @@ const LoginPage: React.FC = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+      <p className="navigate-message">
+        Don’t have an account?{" "}
+        <Link to="/Register" className="navigate-link">
+          Register here
+        </Link>
+      </p>
     </div>
   );
 };

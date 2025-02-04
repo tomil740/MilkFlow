@@ -46,9 +46,7 @@ const ProductsCatalog: React.FC = () => {
 
   return (
     <>
-      {authState1 &&
-        (authState1.productsCollection.length >= 25 ||
-          authState1.isDistributer) && <CategoriesBar />}
+      <CategoriesBar />
       <div className="products-catalog">
         {loading && (
           <div className="loading">

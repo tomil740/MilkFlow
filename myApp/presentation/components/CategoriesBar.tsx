@@ -11,21 +11,26 @@ function CategoriesBar() {
      setSelectedCategory((prev) => (prev === category ? "" : category));
    };
 
-   return (
-     <div className="categories-bar">
-       {AllCategories.map((category) => (
-         <div
-           key={category.id}
-           className={`category-item ${
-             selectedCategory === category.name ? "selected" : ""
-           }`}
-           onClick={() => handleCategoryClick(category.name)}
-         >
-           <div className="category-name">{category.name}</div>
-         </div>
-       ))}
-     </div>
-   );
+     return (
+       <div className="categories-bar">
+         {AllCategories.map((category) => (
+           <div
+             key={category.id}
+             className={`category-item ${
+               selectedCategory === category.name ? "selected" : ""
+             }`}
+             onClick={() => handleCategoryClick(category.name)}
+           >
+             <img
+               src={category.iconUrl}
+               alt={category.name}
+               className="category-icon"
+             />
+             <div className="category-name">{category.name}</div>
+           </div>
+         ))}
+       </div>
+     );
 };
 
 export default CategoriesBar;

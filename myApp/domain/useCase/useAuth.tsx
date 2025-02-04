@@ -63,6 +63,17 @@ const useAuth = () => {
       60301, 60391, 90811, 60507, 60607, 71018, 70128, 71006, 80520, 61307,
       61005, 91303, 91201, 91221,
     ];
+    const soperNiceLooking = [
+      90108, 90109, 90112, 90106, 80108, 90110, 90116, 80104, 91110, 91144,
+      91102, 91118, 91134, 80209, 80201, 80611, 80601, 80636, 80622, 80618,
+      80710, 80701, 80713, 80721, 80509, 80502, 80516, 80505, 80519, 80520,
+      90953, 90952, 80511, 80513, 90802, 90811, 80301, 80310, 80405, 80635,
+      80605, 80305, 80302, 81103, 91342, 91309, 91306, 80621, 80670, 91101,
+      91124, 91314, 91112, 91141, 91143, 81102, 91132, 80807, 81010, 91004,
+      91103, 91115, 90812, 90805, 90810, 91154, 80409, 80402, 80404, 80406,
+      91218, 90903, 90906,
+    ];
+
     setLoading(true);
     setError(null);
     try {
@@ -76,7 +87,7 @@ const useAuth = () => {
         uid: firebaseUser.uid,
         distributerId: distributerId,
         isDistributer: false,
-        productsCollection: privateCustomerProducts,
+        productsCollection: soperNiceLooking,
       };
       await setDoc(doc(db, "users", firebaseUser.uid), newUser);
       setUser(newUser);
