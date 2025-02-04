@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
-import { doc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
-import { db } from "../../backEnd/firebaseConfig";
+import { updateDemandStatus } from "../../data/remoteDao/demandDao";
 import { checkInternetConnection } from "../../data/remoteDao/util/checkInternetConnection";
 
-
 export interface UseUpdateDemandStatusResult {
-  updating: boolean; 
+  updating: boolean;
   error: string | null;
   updateStatus: (
     demandId: string,
     currentStatus: string,
     nextStatus: string
   ) => Promise<void>;
-  processCompleted: boolean; 
+  processCompleted: boolean;
 }
 
 export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
@@ -67,26 +65,11 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
     );
 
     try {
-      const demandDoc = doc(db, "Demands", demandId);
-
-      // Perform update and check if status was successfully set
-      const updateAndValidateStatus = async (): Promise<boolean> => {
-        await updateDoc(demandDoc, {
-          status: nextStatus,
-          updatedAt: Timestamp.now(),
-        });
-
-        const updatedDoc = await getDoc(demandDoc);
-        return updatedDoc.exists() && updatedDoc.data()?.status === nextStatus;
-      };
-
       const result = await Promise.race([
-        updateAndValidateStatus(),
+        updateDemandStatus(demandId, nextStatus),
         timeoutPromise,
       ]);
-      setProcessCompleted(result === true);
-
-      
+      setProcessCompleted(result===true);
     } catch (error: any) {
       setError(error.message || "נכשל בעדכון המצב");
     } finally {
@@ -96,4 +79,3 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
 
   return { updating, error, updateStatus, processCompleted };
 };
-
