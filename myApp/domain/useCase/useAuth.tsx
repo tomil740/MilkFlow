@@ -59,6 +59,10 @@ const useAuth = () => {
     name: string,
     distributerId: string,
   ) => {
+    const privateCustomerProducts = [
+      60301, 60391, 90811, 60507, 60607, 71018, 70128, 71006, 80520, 61307,
+      61005, 91303, 91201, 91221,
+    ];
     setLoading(true);
     setError(null);
     try {
@@ -72,7 +76,7 @@ const useAuth = () => {
         uid: firebaseUser.uid,
         distributerId: distributerId,
         isDistributer: false,
-        productsCollection:[]
+        productsCollection: privateCustomerProducts,
       };
       await setDoc(doc(db, "users", firebaseUser.uid), newUser);
       setUser(newUser);

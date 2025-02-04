@@ -18,7 +18,7 @@ import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 
 const ProductsCatalog: React.FC = () => {
-  const { products, loading, error } = useProducts();
+  const {products, loading, error } = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const authState1 = useRecoilValue(authState);
   const addToCart = useAddToCart();
@@ -46,7 +46,10 @@ const ProductsCatalog: React.FC = () => {
 
   return (
     <>
-      <CategoriesBar />
+      {authState1 &&
+        (authState1.productsCollection.length >= 25 || authState1.isDistributer) && (
+          <CategoriesBar />
+        )}
       <div className="products-catalog">
         {loading && (
           <div className="loading">

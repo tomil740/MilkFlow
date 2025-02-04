@@ -21,11 +21,6 @@ function CategoriesBar() {
            }`}
            onClick={() => handleCategoryClick(category.name)}
          >
-           <img
-             src={category.iconUrl}
-             alt={category.name}
-             className="category-icon"
-           />
            <div className="category-name">{category.name}</div>
          </div>
        ))}
