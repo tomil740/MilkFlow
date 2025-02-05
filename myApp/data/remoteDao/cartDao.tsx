@@ -1,5 +1,5 @@
 import { db } from "../../backEnd/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, setDoc,getDoc } from "firebase/firestore";
 import { CartItem } from '../../domain/models/CartItem';
 
 export async function fetchCartData(userId: string): Promise<CartItem[]> {
@@ -20,3 +20,15 @@ export async function fetchCartData(userId: string): Promise<CartItem[]> {
     throw error;
   }
 }
+
+export const syncToRemoteCart = async (userId: string, cart: CartItem[]) => {
+  try {
+    const cartRef = doc(db, "carts", userId);
+    await setDoc(cartRef, { cart }, { merge: true }); // Save or merge cart
+    console.log("Cart saved to Firebase for user:", userId);
+  } catch (error) {
+    console.error("Failed to save cart to Firebase:", error);
+    throw error;
+  }
+};
+
