@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { updateDemandStatus } from "../../data/remoteDao/demandDao";
 import { checkInternetConnection } from "../../data/remoteDao/util/checkInternetConnection";
 
@@ -9,8 +9,7 @@ export interface UseUpdateDemandStatusResult {
     demandId: string,
     currentStatus: string,
     nextStatus: string
-  ) => Promise<void>;
-  processCompleted: boolean;
+  ) => Promise<boolean>;
 }
 
 export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
@@ -18,16 +17,12 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
   const [error, setError] = useState<string | null>(null);
   const [processCompleted, setProcessCompleted] = useState<boolean>(false);
 
-  useEffect(() => {
-    setProcessCompleted(false);
-  }, []);
-
   const updateStatus = async (
     demandId: string,
     currentStatus: string,
     nextStatus: string
-  ) => {
-    if (updating || processCompleted) return;
+  ): Promise<boolean> => {
+    if (updating || processCompleted) return false;
 
     const TIMEOUT = 10000;
     const validTransitions: { [key in "pending" | "placed"]: string } = {
@@ -37,7 +32,7 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
 
     if (!validTransitions[currentStatus as keyof typeof validTransitions]) {
       setError("מצב נוכחי אינו תקין");
-      return;
+      return false;
     }
 
     if (
@@ -45,13 +40,13 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
       nextStatus
     ) {
       setError("מעבר מצב אינו חוקי");
-      return;
+      return false;
     }
 
     const isConnected = await checkInternetConnection();
     if (!isConnected) {
       setError("אין חיבור לאינטרנט. אנא בדוק את החיבור ונסה שוב.");
-      return;
+      return false;
     }
 
     setUpdating(true);
@@ -65,17 +60,19 @@ export const useUpdateDemandStatus = (): UseUpdateDemandStatusResult => {
     );
 
     try {
-      const result = await Promise.race([
+      await Promise.race([
         updateDemandStatus(demandId, nextStatus),
         timeoutPromise,
       ]);
-      setProcessCompleted(result===true);
+      setProcessCompleted(true);
+      return true;
     } catch (error: any) {
       setError(error.message || "נכשל בעדכון המצב");
+      return false;
     } finally {
       setUpdating(false);
     }
   };
 
-  return { updating, error, updateStatus, processCompleted };
+  return { updating, error, updateStatus };
 };

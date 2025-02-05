@@ -6,6 +6,7 @@
     "strict": true,
     "jsx": "react-jsx", // Updated for React 17+
     "esModuleInterop": true,
+    "types": ["jest", "node"],
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist", // Output directory for compiled files
@@ -16,3 +17,4 @@
   "include": ["myApp", "vite-env.d.ts"], // Include source files and necessary type definitions
   "exclude": ["node_modules", "dist"] // Exclude build and dependencies
 }
+ 
