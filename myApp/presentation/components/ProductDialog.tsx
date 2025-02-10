@@ -5,6 +5,7 @@ import "../style/productCatalog.css";
 import Select from "react-select";
 import BarcodeComponent from './BarcodeComponent';
 import useEditCart from "../../domain/util/useEditCart";
+import FetchImage from "../util/FetchImage";
 
 
 interface CartItemRef {
@@ -77,14 +78,12 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
         <IconButton onClick={onClose} className="product-dialog-close-btn">
           <CloseIcon />
         </IconButton>
-        <img
-          src={`productsImages/regular/${product.imgKey}.jpg`}
-          alt={product.name}
-          className="product-dialog-image"
-          onError={(e) => {
-            e.currentTarget.src = `productsImages/logos/large_logo.png`;
-          }}
-        />
+        <div className="product-dialog-img-container">
+          <FetchImage
+            imgId={product.imgKey} // Only pass the image ID
+            className="product-image"
+          />
+        </div>
         <div className="product-dialog-info">
           <h2>{product.name}</h2>
           <p className="product-dialog-description">{product.description}</p>
@@ -106,7 +105,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
         <p className="product-dialog-items">
           <strong>{product.itemsPerPackage}</strong> יחידות בכל אריזה
         </p>
-        <span>
+        <span className="product-dialog-items">
           {amount} אריזות ({amount * product.itemsPerPackage})
         </span>
         {/* Conditional rendering for action buttons */}

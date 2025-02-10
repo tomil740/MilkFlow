@@ -1,3 +1,4 @@
+import FetchImage from "../util/FetchImage";
 
 interface ProductPreviewItemProps {
   product: any;
@@ -11,13 +12,9 @@ const ProductPreviewItem: React.FC<ProductPreviewItemProps> = ({
    return (
      <div className="product-preview-item">
        <div className="product-image-container">
-         <img
-           src={`productsImages/regular/${product.imgKey}.jpg`}
-           alt={product.name}
+         <FetchImage
+           imgId={product.imgKey} // Only pass the image ID
            className="product-image"
-           onError={(e) => {
-             e.currentTarget.src = `productsImages/logos/large_logo.png`;
-           }}
          />
        </div>
        <div className="product-info">

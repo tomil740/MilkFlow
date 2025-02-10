@@ -175,7 +175,7 @@ const DemandItemPage: React.FC = () => {
           {cartProducts.map((productItem, index) => (
             <ListItem key={index} className="demand-product-item">
               <img
-                src={`/productsImages/regular/${productItem.imgKey}.jpg`}
+                src={`/productsImages/regular/${productItem.imgKey}.webp`}
                 alt={productItem.name}
                 className="product-img"
                 onError={(e) => {
@@ -220,9 +220,7 @@ const DemandItemPage: React.FC = () => {
             onClick={handleUpdateStatus}
             disabled={updating}
           >
-            {demand.status === "pending"
-              ? "עדכן סטטוס ל חלוקה"
-              : "עדכן סטטוס ל הושלם"}
+            עדכן סטטוס ל{statusPresentation(demand.status)}
           </Button>
         </div>
       )}

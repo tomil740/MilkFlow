@@ -15,6 +15,6 @@
     "isolatedModules": true
   },
   "include": ["myApp", "vite-env.d.ts"], // Include source files and necessary type definitions
-  "exclude": ["node_modules", "dist"] // Exclude build and dependencies
+  "exclude": ["node_modules", "dist","tests"] // Exclude build and dependencies
 }
  

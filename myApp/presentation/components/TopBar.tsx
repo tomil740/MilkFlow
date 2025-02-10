@@ -82,13 +82,13 @@ const TopBar = () => {
 
       {!authUser ? (
         <div className="guest-presentation">
-          <span className="guest-message">Hay guest</span>
+          <span className="guest-message">היי אורח</span>
 
           <button
             className="nav-button styled-button login-guest-button"
             onClick={() => handleNavigation("/login")}
           >
-            🔐 Login to get your data
+            🔐 התחבר כדי לצפות בנתונים שלך
           </button>
         </div>
       ) : (
