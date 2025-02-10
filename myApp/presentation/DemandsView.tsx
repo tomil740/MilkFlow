@@ -9,12 +9,11 @@ import { DemandsProductView } from "./components/DemandsProductView";
 import TwoWaySwitch from "./components/TwoWaySwitch";
 import { Demand } from "../domain/models/Demand";
 import { useNavigate } from "react-router-dom";
-import { Typography, Dialog } from "@mui/material";
+import { Typography, Dialog, Box } from "@mui/material";
 import statusPresentation from "./util/statusPresentation";
 import { useDemandsSync } from "../domain/useCase/useDemandsSync";
 import { MdOutlineWifiOff } from "react-icons/md";
 import { checkInternetConnection } from "../data/remoteDao/util/checkInternetConnection";
-
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
@@ -192,7 +191,12 @@ const DemandsView = () => {
                 <TwoWaySwitch value={productView} onChange={setProductView} />
               </div>
               {productView ? (
-                <DemandsProductView demands={getMatchedData()} isDistributer ={userAuth?.isDistributer ? userAuth.isDistributer : false}/>
+                <DemandsProductView
+                  demands={getMatchedData()}
+                  isDistributer={
+                    userAuth?.isDistributer ? userAuth.isDistributer : false
+                  }
+                />
               ) : (
                 getMatchedData().map((demand: Demand) => (
                   <DemandPreviewItem
@@ -211,14 +215,28 @@ const DemandsView = () => {
               )}
             </>
           ) : (
-            <Typography variant="h6">
+            <Typography
+              variant="h6"
+              sx={{ color: "var(--color-on-background)", textAlign: "center" }}
+            >
               אין דרישות מתאימות לסטטוס הנבחר...
             </Typography>
           )
         ) : (
-          <Typography variant="h6">
-            משתמש לא מזוהה. אנא התחבר כדי לראות דרישות.
-          </Typography>
+          <Box
+            sx={{
+              textAlign: "center",
+              fontSize: "1.2rem",
+              color: "var(--color-on-background)",
+            }}
+          >
+            <Typography variant="h6">
+              משתמש לא מזוהה, עליך להתחבר כדי לצפות במוצרים שלך.
+            </Typography>
+            <Typography variant="body2" sx={{ color: "gray" }}>
+              לחץ על סרגל העליון להתחברות.
+            </Typography>
+          </Box>
         )}
       </div>
 

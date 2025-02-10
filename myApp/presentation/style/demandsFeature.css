@@ -222,7 +222,7 @@
 
 /* User Amount */
 .user-amount {
-  font-size: 14px;
+  font-size: 14px; 
   color: var(--color-on-surface);
 }
 
