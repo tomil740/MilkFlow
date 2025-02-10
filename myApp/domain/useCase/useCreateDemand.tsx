@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { cartState } from "../states/cartState";
-import { addDemand } from "../../data/remoteDao/addDemand";
 import { authState } from "../states/authState";
 import { Demand } from "../models/Demand";
-import { doc, getDoc} from "firebase/firestore";
-import { db } from "../../backEnd/firebaseConfig";
 import { checkInternetConnection } from "../../data/remoteDao/util/checkInternetConnection";
+import { addDemand } from "../../data/remoteDao/demandDao";
 
 export const useCreateDemand = () => {
   const [loading, setLoading] = useState(false);

@@ -9,7 +9,7 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
-  Dialog, 
+  Dialog,
 } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { authState } from "../domain/states/authState";
@@ -24,7 +24,6 @@ import { Demand } from "../domain/models/Demand";
 import { DatePresentation } from "./components/DatePresentation";
 import statusPresentation from "./util/statusPresentation";
 import { checkInternetConnection } from "../data/remoteDao/util/checkInternetConnection";
-
 
 const DemandItemPage: React.FC = () => {
   const location = useLocation();
@@ -51,7 +50,6 @@ const DemandItemPage: React.FC = () => {
     updating,
     error: updateError,
     updateStatus,
-    processCompleted,
   } = useUpdateDemandStatus();
 
   useEffect(() => {
@@ -79,7 +77,6 @@ const DemandItemPage: React.FC = () => {
   }, [demand, allProducts]);
 
   const handleUpdateStatus = async () => {
-    // Step 1: Check internet connection
     const isConnected = await checkInternetConnection();
     if (!isConnected) {
       setSnackbar({
@@ -87,20 +84,35 @@ const DemandItemPage: React.FC = () => {
         message: "אין חיבור לאינטרנט. אנא בדוק את החיבור ונסה שוב.",
         severity: "error",
       });
-      return; // Don't proceed with update if no connection
+      return;
     }
 
-    try {
-      setDialogOpen(true);
-      const newStatus = demand.status === "pending" ? "placed" : "completed";
-      await updateStatus(demand.id, demand.status, newStatus);
+    setDialogOpen(true);
 
-      setSnackbar({
-        open: true,
-        message: "סטטוס עודכן בהצלחה!",
-        severity: "success",
-      });
-      setTimeout(() => navigate("/demandsView"), 2000);
+    try {
+      const newStatus = demand.status === "pending" ? "placed" : "completed";
+
+      // Perform the status update and check the result
+      const processCompleted = await updateStatus(
+        demand.id,
+        demand.status,
+        newStatus
+      );
+
+      if (processCompleted) {
+        setSnackbar({
+          open: true,
+          message: "סטטוס עודכן בהצלחה!",
+          severity: "success",
+        });
+        setTimeout(() => navigate("/demandsView"), 2000);
+      } else {
+        setSnackbar({
+          open: true,
+          message: "נכשל בעדכון המצב",
+          severity: "error",
+        });
+      }
     } catch (err) {
       console.error("Failed to update status:", err);
       setSnackbar({
@@ -163,7 +175,7 @@ const DemandItemPage: React.FC = () => {
           {cartProducts.map((productItem, index) => (
             <ListItem key={index} className="demand-product-item">
               <img
-                src={`/productsImages/regular/${productItem.imgKey}.jpg`}
+                src={`/productsImages/regular/${productItem.imgKey}.webp`}
                 alt={productItem.name}
                 className="product-img"
                 onError={(e) => {
@@ -206,11 +218,9 @@ const DemandItemPage: React.FC = () => {
             color="primary"
             className="update-status-button"
             onClick={handleUpdateStatus}
-            disabled={updating || processCompleted}
+            disabled={updating}
           >
-            {demand.status === "pending"
-              ? "עדכן סטטוס ל חלוקה"
-              : "עדכן סטטוס ל הושלם"}
+            עדכן סטטוס ל{statusPresentation(demand.status)}
           </Button>
         </div>
       )}

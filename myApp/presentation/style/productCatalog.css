@@ -26,6 +26,11 @@ body{
   height: 100%; /* Ensure consistency in height */
 
 }
+.product-dialog-img-container{
+  min-height: 310px;
+  min-width: 250px;
+}
+
 
 .product-preview-item:hover {
   transform: translateY(-4px);

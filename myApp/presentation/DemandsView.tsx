@@ -75,10 +75,23 @@ const DemandsView = () => {
     setDialogOpen(true);
     setLoadingStatus(true); // Start loading indicator
 
+    // Start by assuming the process will fail
+    let processFailed = false;
+
     try {
+      // Use Promise.all to update all demands
       await Promise.all(
-        theData.map((demand) => updateStatus(demand.id, nextStatus))
+        theData.map(async (demand) => {
+          const updateResult = await updateStatus(demand.id, nextStatus);
+
+          if (!updateResult) {
+            processFailed = true; // If one update fails, mark the process as failed
+            throw new Error(`Failed to update demand with ID: ${demand.id}`);
+          }
+        })
       );
+
+      // If no failure occurs, show success message
       setSnackbar({
         open: true,
         message: `הסטטוס עודכן ל- ${statusPresentation(nextStatus)}!`,
@@ -86,7 +99,10 @@ const DemandsView = () => {
       });
       setStatus(nextStatus);
     } catch (error: any) {
-      const errorMessage = error?.message || "שגיאה בעדכון הסטטוס";
+      const errorMessage = processFailed
+        ? "שגיאה הופיעה בתהליך,נסה שוב."
+        : error?.message || "שגיאה בעדכון הסטטוס";
+
       setSnackbar({
         open: true,
         message: errorMessage,
@@ -97,6 +113,7 @@ const DemandsView = () => {
       setLoadingStatus(false); // Stop loading indicator
     }
   };
+
 
   const handleDemandClick = (demand: Demand) => {
     navigate(`/Demand/${demand.id}`, { state: { demand } });

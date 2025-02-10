@@ -75,11 +75,20 @@ const ProductsCatalog: React.FC = () => {
             ))}
           </Grid>
         ) : (
-          <div className="empty-products-message">
+          <div className="empty-products-message grid place-items-center p-4">
             {authState1 ? (
-              <p>There are no matched products to the picked category.</p>
+              <p className="text-lg text-gray-600">
+                לא נמצאו מוצרים מתאימים לקטגוריה שנבחרה.
+              </p>
             ) : (
-              <p>Please authenticate to observe your products.</p>
+              <div className="text-center">
+                <p className="text-lg text-gray-600">
+                  עליך להתחבר כדי לצפות במוצרים שלך.
+                </p>
+                <small className="text-sm text-gray-500">
+                  לחץ על סרגל העליון להתחברות.
+                </small>
+              </div>
             )}
           </div>
         )}
