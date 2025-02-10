@@ -9,12 +9,11 @@ import { DemandsProductView } from "./components/DemandsProductView";
 import TwoWaySwitch from "./components/TwoWaySwitch";
 import { Demand } from "../domain/models/Demand";
 import { useNavigate } from "react-router-dom";
-import { Typography, Dialog } from "@mui/material";
+import { Typography, Dialog, Box } from "@mui/material";
 import statusPresentation from "./util/statusPresentation";
 import { useDemandsSync } from "../domain/useCase/useDemandsSync";
 import { MdOutlineWifiOff } from "react-icons/md";
 import { checkInternetConnection } from "../data/remoteDao/util/checkInternetConnection";
-
 
 const DemandsView = () => {
   const userAuth = useRecoilValue(authState);
@@ -75,10 +74,23 @@ const DemandsView = () => {
     setDialogOpen(true);
     setLoadingStatus(true); // Start loading indicator
 
+    // Start by assuming the process will fail
+    let processFailed = false;
+
     try {
+      // Use Promise.all to update all demands
       await Promise.all(
-        theData.map((demand) => updateStatus(demand.id, nextStatus))
+        theData.map(async (demand) => {
+          const updateResult = await updateStatus(demand.id, nextStatus);
+
+          if (!updateResult) {
+            processFailed = true; // If one update fails, mark the process as failed
+            throw new Error(`Failed to update demand with ID: ${demand.id}`);
+          }
+        })
       );
+
+      // If no failure occurs, show success message
       setSnackbar({
         open: true,
         message: `הסטטוס עודכן ל- ${statusPresentation(nextStatus)}!`,
@@ -86,7 +98,10 @@ const DemandsView = () => {
       });
       setStatus(nextStatus);
     } catch (error: any) {
-      const errorMessage = error?.message || "שגיאה בעדכון הסטטוס";
+      const errorMessage = processFailed
+        ? "שגיאה הופיעה בתהליך,נסה שוב."
+        : error?.message || "שגיאה בעדכון הסטטוס";
+
       setSnackbar({
         open: true,
         message: errorMessage,
@@ -97,6 +112,7 @@ const DemandsView = () => {
       setLoadingStatus(false); // Stop loading indicator
     }
   };
+
 
   const handleDemandClick = (demand: Demand) => {
     navigate(`/Demand/${demand.id}`, { state: { demand } });
@@ -175,7 +191,12 @@ const DemandsView = () => {
                 <TwoWaySwitch value={productView} onChange={setProductView} />
               </div>
               {productView ? (
-                <DemandsProductView demands={getMatchedData()} isDistributer ={userAuth?.isDistributer ? userAuth.isDistributer : false}/>
+                <DemandsProductView
+                  demands={getMatchedData()}
+                  isDistributer={
+                    userAuth?.isDistributer ? userAuth.isDistributer : false
+                  }
+                />
               ) : (
                 getMatchedData().map((demand: Demand) => (
                   <DemandPreviewItem
@@ -194,14 +215,28 @@ const DemandsView = () => {
               )}
             </>
           ) : (
-            <Typography variant="h6">
+            <Typography
+              variant="h6"
+              sx={{ color: "var(--color-on-background)", textAlign: "center" }}
+            >
               אין דרישות מתאימות לסטטוס הנבחר...
             </Typography>
           )
         ) : (
-          <Typography variant="h6">
-            משתמש לא מזוהה. אנא התחבר כדי לראות דרישות.
-          </Typography>
+          <Box
+            sx={{
+              textAlign: "center",
+              fontSize: "1.2rem",
+              color: "var(--color-on-background)",
+            }}
+          >
+            <Typography variant="h6">
+              משתמש לא מזוהה, עליך להתחבר כדי לצפות במוצרים שלך.
+            </Typography>
+            <Typography variant="body2" sx={{ color: "gray" }}>
+              לחץ על סרגל העליון להתחברות.
+            </Typography>
+          </Box>
         )}
       </div>
 

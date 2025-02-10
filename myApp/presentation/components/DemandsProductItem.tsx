@@ -1,4 +1,5 @@
 import { SummarizedProduct } from "../../domain/models/SummarizedProduct";
+import FetchImage from "../util/FetchImage";
 import BarcodeComponent from "./BarcodeComponent";
 import UserHeader from "./UserHeader";
 
@@ -18,14 +19,10 @@ const DemandsProductItem: React.FC<DemandsProductItemProps> = ({
       {/* Product Row */}
       <div className="product-row">
         {product.product?.imgKey && (
-          <img
-            src={`productsImages/regular/${product.product.imgKey}.jpg`}
-            alt={product.product.name}
-            className="product-image"
-            onError={(e) => {
-              e.currentTarget.src = `productsImages/logos/large_logo.png`;
-            }}
-          />
+          <FetchImage
+              imgId={product.product.imgKey} // Only pass the image ID
+              className="product-image"
+            />
         )}
         <div className="product-info">
           <div className="product-name">{product.product?.name}</div>

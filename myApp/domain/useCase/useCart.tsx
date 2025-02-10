@@ -1,7 +1,6 @@
 import { useRecoilState } from "recoil";
 import { cartState } from "../states/cartState";
-import { fetchCartData } from "../../data/remoteDao/fetchCartData";
-import { syncToRemoteCart } from "../../data/remoteDao/syncToRemoteCart";
+import { fetchCartData, syncToRemoteCart } from "../../data/remoteDao/cartDao";
 
 export const useCart = () => {
   const [cart, setCart] = useRecoilState(cartState);

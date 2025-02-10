@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import UserHeader from "./UserHeader";
-import { fetchDistributers } from "../../data/remoteDao/fetchDistributers";
 import "../style/authintication.css";
+import { fetchDistributers } from "../../data/remoteDao/userDao";
 
 interface DistributerPickerProps {
   distributerPick: string | null;

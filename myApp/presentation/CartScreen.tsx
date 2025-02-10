@@ -9,6 +9,7 @@ import ProductDialog from "./components/ProductDialog";
 import { authState } from "../domain/states/authState";
 import { ProductWithAmount } from '../domain/models/Product';
 import { useNavigate } from "react-router-dom";
+import FetchImage from './util/FetchImage';
 
 
 
@@ -91,13 +92,9 @@ const CartScreen: React.FC = () => {
             >
               ✎
             </button>
-            <img
-              src={`productsImages/regular/${product.imgKey}.jpg`}
-              alt={product.name}
+            <FetchImage
+              imgId={product.imgKey} // Only pass the image ID
               className="product-img"
-              onError={(e) => {
-                e.currentTarget.src = `productsImages/logos/large_logo.png`;
-              }}
             />
             <div className="product-info">
               <div className="product-name">{product.name}</div>

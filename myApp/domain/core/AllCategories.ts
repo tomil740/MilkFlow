@@ -5,7 +5,7 @@ export const AllCategories: Category[] = [
     id: "1",
     name: "בולגריות",
     description: "מבחר גבינות בולגריות עשירות ומתאימות לסלטים.", 
-    iconUrl: "productsImages/regular/7290000554006.jpg", 
+    iconUrl: "productsImages/regular/7290000554006.webp", 
     //"https://www.gad-dairy.co.il/wp-content/uploads/2018/04/h6810327_550x55023.png",
   },
   {
