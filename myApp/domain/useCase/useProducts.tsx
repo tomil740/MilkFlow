@@ -17,7 +17,7 @@ import {
   saveLastUpdateToLocal,
   setToLocalStorage,
 } from "../../data/localCacheDao/localStorageDao";
-import safeParseDate from "../util/safeParseDate";
+import { safeParseDate, isSameDayFun } from "../util/safeParseDate";
 
 function useProducts() {
   const allProducts = useRecoilValue(allProductsState);
@@ -41,26 +41,19 @@ function useProducts() {
     console.log("Local check sync:", localCheckSync);
 
 
-    if (localCheckSync){
-      // Use the safeParseDate function to get a valid Date object or null
-      const checkSyncDate = safeParseDate(localCheckSync);
-    if (!checkSyncDate) {
-      console.error("Invalid checkProductSync date");
-      return true; // Invalid date, trigger sync
-    }
-    // Check if local check sync is from today, if not, trigger the pull
-    const todayRef = new Date();
-    const checkSyncDay = checkSyncDate.getDate();
-    const todayDay = todayRef.getDate();
-    const isSameDay = checkSyncDay === todayDay;
+    const checkSyncDate = safeParseDate(localCheckSync);
+    if (checkSyncDate) {
+      // Check if local check sync is from today, if not, trigger the pull
+      const todayRef = new Date();
+      const isSameDay = isSameDayFun(checkSyncDate, todayRef);
 
-    if (isSameDay) {
-      console.log("Local sync check is from today. Sync isnt required.");
-      return false; // Sync is needed if not the same day
+      if (isSameDay) {
+        console.log("Local sync check is from today. Sync is not required!.");
+        return false; // Sync is needed if not the same day
+      }
+    } else {
+      console.log("no localCheckSync is avialble, skip the pre check...");
     }
-  }else{
-    console.log("no localCheckSync is avialble, skip the pre check...");
-  }
 
   if (localLastUpdate){
     // Compare remote and local last update timestamps
