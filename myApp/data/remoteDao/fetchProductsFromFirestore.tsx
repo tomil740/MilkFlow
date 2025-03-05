@@ -39,9 +39,9 @@ export const fetchRemoteLastUpdate = async (): Promise<Timestamp | null> => {
     const docRef = doc(db, "metadata", "productSync"); // Access the metadata document for product sync
     const docSnapshot = await getDoc(docRef); // Get the document snapshot
 
-    // If the document exists, return the updatedAt field as a string, otherwise return null
+    // If the document exists, return the updateAt field as a string, otherwise return null
     if (docSnapshot.exists()) {
-      return docSnapshot.data()?.updatedAt || null;
+      return docSnapshot.data()?.updateAt || null;
     } else {
       console.log("No such document found for productSync");
       return null; // If the document does not exist, return null

@@ -29,6 +29,7 @@ function useProducts() {
 
   // Helper: Check if sync is required based on timestamps
   const isSyncRequired = async (): Promise<boolean> => {
+
     console.log("Checking if sync is required...");
 
     const localLastUpdate = await getLocalLastUpdate(
@@ -100,9 +101,9 @@ function useProducts() {
       const localData = previousProducts || [];
 
       if (
-        needsSync //||
-        //localData.length !== allProducts.length ||
-        //allProducts.length <= 15
+        needsSync ||
+        (previousProducts== null || previousProducts.length <= 15)
+        
       ) {
         console.log("Syncing data...");
 
@@ -117,6 +118,9 @@ function useProducts() {
 
         // Update lastProductsUpdate with the remote last update timestamp
         const remoteLastUpdate = await fetchRemoteLastUpdate();
+        console.log("remoteLatUpdate",remoteLastUpdate)
+
+        1/0
 
         if (remoteLastUpdate) {
           await saveLastUpdateToLocal(remoteLastUpdate); // Save remote timestamp
@@ -137,6 +141,8 @@ function useProducts() {
       }
     } catch (err: any) {
       // If something fails, revert to the previous state and update the error state
+
+      //the null check to flag if allredy change anything...
       if (previousProducts !== null)
         await setToLocalStorage("products", previousProducts);
       if (previousLastUpdate !== null)
