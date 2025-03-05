@@ -18,10 +18,12 @@ export const allProductsState = atom<Product[]>({
     ({ setSelf, onSet }) => {
       // Initialize from local storage
       (async () => {
-        const storedData = await getFromLocalStorage(localStorageKey);
-        if (storedData?.length) {
-          setSelf(storedData);
-        }
+        const storedData = await getFromLocalStorage<Product[]>(
+          localStorageKey
+        );
+
+        // Ensure storedData is always an array before setting state
+        setSelf(Array.isArray(storedData) ? storedData : []);
       })();
 
       // Persist changes to local storage
@@ -31,6 +33,7 @@ export const allProductsState = atom<Product[]>({
     },
   ],
 });
+
 
 // Selector for the main product logic based on the authenticated user
 export const productsState = selector<Product[]>({
