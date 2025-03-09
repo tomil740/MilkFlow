@@ -1,50 +1,66 @@
-# React + TypeScript + Vite
+# MilkFlow - B2B Demand and Supply Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 Project Overview
+**MilkFlow** is a B2B relation management web app designed to automate and streamline the demand and supply process for milk products. The app connects customers and distributors, enabling efficient management and communication throughout the demand lifecycle.
 
-Currently, two official plugins are available:
+This MVP provides a robust solution to handle core business needs with automated workflows, real-time demand tracking, and scalable features to ensure a smooth and reliable process.
+### **Supported Platforms**  
+📱 **Mobile** | 💻 **Desktop** | 🖥️ **Web**  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
+## 🔗 [Live Demo(Test data):](https://themilkflow.netlify.app/)  
+> **Note:** explore all features: mail :
+shvprslshly@mail.com ,password:
+1234567
 
-## Expanding the ESLint configuration
+## 📸 Project Preview
+<img width="657" alt="Screenshot 2025-02-02 at 16 51 14" src="https://github.com/user-attachments/assets/e72d85ab-7aee-4ab0-82de-5603f4ea7c3e" />
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 🔑 Features List
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### 🛍️ **Product Marketplace**
+- CRUD-style product management for customers and distributors.  
+- Custom product presentation based on user type.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### 🔑 **Authentication & Authorization**
+- Role-based access control (Customer/Distributor).  
+- Custom feature access and data presentation per user type.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### 🛒 **Cart Management**
+- Save and track selected products before demand submission.  
+- Summarized cart view for demand review.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### 📊 **Demand Management**
+- **Customers:**
+  - Submit, view, and observe demand status in real-time.
+- **Distributors:**
+  - Manage and track all customer demands.
+  - Filter and sort demands by status and other criteria.
+  - Summarized product demand views for better decision-making.
+
+### 📁 **Data Handling & Synchronization**
+- Local caching for static product data to optimize app performance.
+- Remote demand collection syncing in real time to reflect status updates.
+
+### 📱 **Optimized UI/UX**
+- Mobile-first design, scaling seamlessly to tablets and desktop devices.  
+- Clear, user-friendly interfaces for effortless interaction across roles.
+
+### ⚙️ **Process Automation Compatibility**
+- Structured to integrate smoothly with existing factory operations, enabling streamlined and automated demand and supply processes.
+
+### 🔍 **Edge Case & Process Handling**
+- Thoughtfully crafted UX for every transaction and state, ensuring reliable and predictable user experiences.
+- Comprehensive error handling and state management to address edge cases and maintain process reliability.
+
+---
+
+## 🔧 Technical Summary
+- **Tech Stack:** React, TypeScript, Firebase, Recoil, React Router, MUI (Material 3).
+- **Architecture:** MVVM with clean code principles adapted for React.
+- **State Management:** Single source of truth using Recoil for reliable, scalable state handling.
+- **Modular Structure:** Single responsibility-driven components for easy feature updates and backend migration.
+- **Mobile-First Design:** Optimized for scalability across different devices, including tablets and desktops.
+- **Integration Compatibility:** Designed to fit with existing factory workflows for full process automation.

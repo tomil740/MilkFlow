@@ -12,18 +12,30 @@ import {
 //todo : on auth should set the global state for the authinticated id to sync here as well
 const localStorageKey = "cart_fAHk3bhvX8yPRdTlS4zk";
 
+// Synchronous function to get initial cart data
+const getInitialCartState = (): CartItem[] => {
+  try {
+    const storedCart = localStorage.getItem(localStorageKey);
+    return storedCart ? (JSON.parse(storedCart) as CartItem[]) : [];
+  } catch (error) {
+    console.error("Error reading cart from localStorage:", error);
+    return [];
+  }
+};
+
 export const cartState = atom<CartItem[]>({
   key: "cartState",
-  default: getFromLocalStorage(localStorageKey), // Default to products from localStorage or empty array
-    effects_UNSTABLE: [
-      ({ onSet }) => {
-        // Save to localStorage whenever productsState changes
-        onSet((newState) => {
-          setToLocalStorage(localStorageKey, newState);
-        });
-      },
-    ],
+  default: getInitialCartState(), // Synchronously get cart data
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      // Save to localStorage whenever cartState changes
+      onSet((newState) => {
+        setToLocalStorage(localStorageKey, newState);
+      });
+    },
+  ],
 });
+
 
 // Selector for pulling detailed product data
 export const cartProductsSelector = selector({
