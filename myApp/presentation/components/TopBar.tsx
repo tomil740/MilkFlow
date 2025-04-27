@@ -65,21 +65,11 @@ const TopBar = () => {
 
   return (
     <div className="top-bar">
-      {/* Top Icons Section */}
-      <div className="top-icons-wrapper">
-        <ThemeToggleBut />
-        <ConnectionWatcher />
-      </div>
-
-      {/* Left Section */}
-      <div className="top-bar-section">
-        <ActionButton
-          icon="🛍️"
-          label="כל המוצרים"
-          onClick={() => handleNavigation("/")}
-        />
-      </div>
-
+      <ActionButton
+        icon="🛍️"
+        label="כל המוצרים"
+        onClick={() => handleNavigation("/")}
+      />
       {!authUser ? (
         <div className="guest-presentation">
           <span className="guest-message">היי אורח</span>
@@ -93,31 +83,23 @@ const TopBar = () => {
         </div>
       ) : (
         <>
-          <UserHeader userId={authUser.uid} />
+          <UserHeader
+            userId={authUser.uid}
+            onLogout={() => setAuthUser(null)}
+          />
           {!authUser.isDistributer && (
-            <div
-              className="icon-button"
-              onClick={() => handleNavigation("/cart")}
-              title="Go to Cart"
-            >
-              🛒
-              <span className="cart-count">{cart?.length || 0}</span>
-            </div>
-          )}
-          <button
-            className="nav-button styled-button"
-            onClick={() => setAuthUser(null)}
-          >
-            🚪 Logout
-          </button>
-          {/* Right Section */}
-          <div className="top-bar-section">
             <ActionButton
-              icon="📋"
-              label={authUser.isDistributer ? "מנהל הזמנות" : "ההזמנות שלי"}
-              onClick={() => handleNavigation("/demandsView")}
+              icon="🛒"
+              label="העגלה שלי"
+              floatingLab={cart?.length || 0}
+              onClick={() => handleNavigation("/cart")}
             />
-          </div>
+          )}
+          <ActionButton
+            icon="📋"
+            label={authUser.isDistributer ? "מנהל הזמנות" : "ההזמנות שלי"}
+            onClick={() => handleNavigation("/demandsView")}
+          />
         </>
       )}
     </div>
@@ -127,25 +109,34 @@ const TopBar = () => {
 
 export default TopBar;
 
-import React from "react";
 
 interface ActionButtonProps {
   icon: React.ReactNode;
   label: string;
   onClick: () => void;
+  floatingLab?: number;
 }
 
-const ActionButton: React.FC<ActionButtonProps> = ({
+export const ActionButton: React.FC<ActionButtonProps> = ({
   icon,
   label,
   onClick,
+  floatingLab,
 }) => {
   return (
-    <div className="action-button" onClick={onClick}>
-      <div className="action-icon">{icon}</div>
-      <span className="action-label">{label}</span>
+    <div className="action-button-wrapper" onClick={onClick}>
+      <div className="action-button-frame">
+        <div className="action-button-icon">{icon}</div>
+        {floatingLab !== undefined && (
+          <div className="floating-badge">{floatingLab}</div>
+        )}
+      </div>
+      <span className="action-button-label">{label}</span>
     </div>
   );
 };
+
+
+
 
 
