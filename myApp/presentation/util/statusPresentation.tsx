@@ -3,7 +3,7 @@ const statuses = ["pending", "placed", "completed"];
 export default function statusPresentation(status: string): string {
   const statusMap: Record<string, string> = {
     pending: "⏳ ממתין",
-    placed: "📥 התקבל",
+    placed: "📥 שודר",
     completed: "✔️ סופק",
   };
 

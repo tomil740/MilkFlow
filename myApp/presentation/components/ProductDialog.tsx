@@ -77,7 +77,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
       <div className="product-dialog" onClick={(e) => e.stopPropagation()}>
         <IconButton onClick={onClose} className="product-dialog-close-btn">
           <CloseIcon />
-        </IconButton>
+        </IconButton> 
         <div className="product-dialog-img-container">
           <FetchImage
             imgId={product.imgKey} // Only pass the image ID
