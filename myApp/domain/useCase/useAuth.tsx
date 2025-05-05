@@ -5,7 +5,7 @@ import { loginUser, registerUser, logoutUser } from "../../data/remoteDao/authDa
 import { User } from "../models/User";
 import { SuperNiceLooking } from "../core/DeffaultData";
 
-
+ 
 const useAuth = () => {
   const [user, setUser] = useRecoilState(authState);
   const [loading, setLoading] = useState(false);

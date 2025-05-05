@@ -8,7 +8,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import ProductPreviewItem from "./components/ProductPreviewItem";
 import ProductDialog from "./components/ProductDialog";
-import CategoriesBar from "./components/CategoriesBar";
+import CategoriesBar from "./components/CategoriesBar"; 
 import { Product } from "../domain/models/Product";
 import useProducts from "../domain/useCase/useProducts";
 import "./style/productCatalog.css";
