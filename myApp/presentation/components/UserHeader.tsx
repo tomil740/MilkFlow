@@ -1,22 +1,29 @@
+import { useEffect, useState } from "react";
 import useGetUserById from "../../domain/useCase/useGetUserById";
 import PersonPinIcon from "@mui/icons-material/PersonPin"; // Correct import
+import { ActionButton } from "./TopBar";
 
-const styles1 = {
-  profileImage: {
-    width: "50px",
-    height: "50px",
-    borderRadius: "50%", 
-    marginRight: "10px",
-    objectFit: "cover" as "cover",
-  },
-};
 
 interface UserHeaderProps {
   userId: string;
+  onLogout?: () => void; // <-- make logout optional
 }
- 
-const UserHeader: React.FC<UserHeaderProps> = ({ userId }) => {
-  let { loading, error, data } = useGetUserById(userId);
+
+const UserHeader: React.FC<UserHeaderProps> = ({ userId, onLogout }) => {
+  const { loading, error, data } = useGetUserById(userId);
+  const [showLogout, setShowLogout] = useState(false);
+
+  useEffect(() => {
+    if (!onLogout) return; // no need for timer if logout behavior not needed
+
+    let timer: NodeJS.Timeout;
+    if (showLogout) {
+      timer = setTimeout(() => {
+        setShowLogout(false);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [showLogout, onLogout]);
 
   if (loading) {
     return <div style={styles.container}>Loading...</div>;
@@ -34,13 +41,26 @@ const UserHeader: React.FC<UserHeaderProps> = ({ userId }) => {
     return null;
   }
 
+  const handleClick = () => {
+    if (!onLogout) return; 
+
+    if (showLogout) {
+      onLogout();
+    } else {
+      setShowLogout(true);
+    }
+  };
+
   return (
-    <div style={styles.container}>
-      <h1 style={styles.userName}>{data.name}</h1>
-      <PersonPinIcon style={styles.icon} /> {/* Using PersonPinIcon */}
-    </div>
+    <ActionButton
+      icon={showLogout && onLogout ? "🚪" : <PersonPinIcon />}
+      label={showLogout && onLogout ? "Logout" : data.name}
+      onClick={handleClick}
+    />
   );
 };
+
+export default UserHeader;
 
 const styles = {
   container: {
@@ -70,4 +90,3 @@ const styles = {
   },
 };
 
-export default UserHeader;

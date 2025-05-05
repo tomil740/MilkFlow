@@ -1,115 +1,3 @@
-
-
-
-.top-bar-section {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* Buttons and Icons */
-.nav-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  background-color: transparent;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s;
-}
-
-/* Buttons and Icons */ 
-.styled-button {
-  display: flex; 
-  align-items: center;
-  justify-content: center;
-  gap: 6px; /* Space between icon and text */
-  padding: 10px 14px;
-  background: var(--color-surface-variant);
-  color: var(--color-on-surface-variant);
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 0.9rem;
-  transition: background-color 0.3s, box-shadow 0.2s;
-}
-
-.styled-button:hover {
-  background-color: var(--color-primary-hover);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.styled-button:active {
-  background-color: var(--color-primary-dark);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.styled-button svg {
-  font-size: 1.2rem;
-}
-
-
-.nav-button:hover {
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.nav-button.active {
-  background-color: var(--color-secondary);
-  color: var(--color-on-secondary);
-}
-
-.icon-button {
-  font-size: 2rem; /* Increase the size of the cart icon */
-  padding: 8px;
-  border-radius: 50%;
-  background-color: var(--color-surface-variant);
-  color: var(--color-on-surface);
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-  position: relative; /* This allows us to position the count relative to the icon */
-}
-
-.cart-count {
-  position: absolute;
-  top: 5px;  /* Move the number slightly above the icon */
-  left: -4px;  /* Move the number a bit to the left of the icon */
-  font-size: 0.75rem;  /* Small but legible number */
-  font-weight: bold;
-  color: var(--color-primary);  /* Matching primary color */
-  background-color: var(--color-surface);  /* Slight contrast to make the count stand out */
-  padding: 2px 6px;
-  border-radius: 50%;
-}
-
-
-
-.icon-button:hover {
-  transform: scale(1.1);
-  background-color: var(--color-secondary);
-  color: var(--color-on-secondary);
-}
-
-.icon-button.active {
-  box-shadow: inset 0 0 0 2px var(--color-secondary);
-}
-
-/* Responsive Design */
-@media (min-width: 768px) {
-  .top-bar {
-    padding: 16px 32px;
-  }
-
-  .icon-button {
-    font-size: 1.5rem;
-  }
-}
-
-
 /* TopBar Styles */
 .top-bar {
   position: relative;
@@ -121,22 +9,6 @@
   background: var(--color-surface-variant);
   color: var(--color-on-surface);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-  font-size: 1.25rem;
-  font-weight: bold;
-}
-
-.auth-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-name {
-  font-size: 1rem;
-  font-weight: 500;
 }
 
 /* Loading Dialog Styles */
@@ -166,35 +38,67 @@
 }
 
 
-.action-button {
+
+
+
+
+
+.action-button-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 8px;
-  background-color: var(--color-surface-variant);
-  color: var(--color-on-surface);
-  border-radius: 8px;
   cursor: pointer;
+  gap: 6px;
+}
+
+.action-button-frame {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  background-color: var(--color-surface);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s, transform 0.2s;
-  max-width: 80px;
+}
+
+.action-button-icon {
+  width: 70%;
+  height: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px; /* If you pass a plain icon like Material Icons */
+}
+
+.action-button-wrapper:hover .action-button-frame {
+  background-color: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.action-button-label {
+  font-size: 12px;
+  color: var(--color-on-surface);
   text-align: center;
 }
 
-.action-button:hover {
-  background-color: var(--color-secondary);
-  color: var(--color-on-secondary);
-  transform: scale(1.1);
-}
-
-.action-icon {
-  font-size: 1.8rem;
-}
-
-.action-label {
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin-top: 4px;
+.floating-badge {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  color: var(--color-surface);  /* Matching primary color */
+  background-color: var(--color-primary);  /* Slight contrast to make the count stand out */
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .top-icons-wrapper {
@@ -237,6 +141,9 @@
     white-space: normal;
     max-width: 100%;
   }
+  .top-bar {
+    padding: 16px 32px;
+  }
 
   
 }
@@ -245,7 +152,6 @@
       visibility: hidden;
     }
 }
-
 
 @keyframes spin {
   from {

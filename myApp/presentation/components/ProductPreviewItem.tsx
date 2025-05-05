@@ -7,7 +7,7 @@ interface ProductPreviewItemProps {
 
 const ProductPreviewItem: React.FC<ProductPreviewItemProps> = ({
   product,
-  onClick,
+  onClick, 
 }) => {
    return (
      <div className="product-preview-item">
