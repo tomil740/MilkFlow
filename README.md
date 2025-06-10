@@ -4,19 +4,38 @@
 **MilkFlow** is a B2B relation management web app designed to automate and streamline the demand and supply process for milk products. The app connects customers and distributors, enabling efficient management and communication throughout the demand lifecycle.
 
 This MVP provides a robust solution to handle core business needs with automated workflows, real-time demand tracking, and scalable features to ensure a smooth and reliable process.
+
 ### **Supported Platforms**  
 📱 **Mobile** | 💻 **Desktop** | 🖥️ **Web**  
 
 ---
-## 🔗 [Live Demo(Test data):](https://themilkflow.netlify.app/)  
-> **Note:** explore all features: mail :
-shvprslshly@mail.com ,password:
-1234567
 
-## 📸 Project Preview
-<img width="657" alt="Screenshot 2025-02-02 at 16 51 14" src="https://github.com/user-attachments/assets/e72d85ab-7aee-4ab0-82de-5603f4ea7c3e" />
+## 📱 Native Mobile App (KMP Version)
+
+To improve mobile user experience, we developed a **native mobile version** using **Kotlin Multiplatform (KMP)**. This version runs on both **Android and iOS**, offering:
+
+- A **smoother and more reliable UX**
+- Support for **offline access** and **push notifications**
+- Better performance in low-connectivity environments
+- A presentable, mobile-first interface built for daily field use
+
+👉 **Check it out:** [MilkFlow Native App Repository](https://github.com/tomil740/MilkFlowNative)
+
+> Both apps share the same backend and core features, with the mobile version focused on enhanced usability in real-world delivery workflows.
 
 ---
+
+## 🔗 [Live Demo (Test Data)](https://themilkflow.netlify.app/)  
+> **Note:** explore all features using  
+Email: `shvprslshly@mail.com`  
+Password: `1234567`
+
+---
+
+## 📸 Project Preview
+<img width="657" alt="Screenshot 2025-06-10 at 16 02 31" src="https://github.com/user-attachments/assets/5f6051c5-5b53-4b2b-a2a0-49704476261e" />
+
+
 
 ## 🔑 Features List
 
