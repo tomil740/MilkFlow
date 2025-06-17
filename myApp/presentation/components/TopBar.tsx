@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { authState } from "../../domain/states/authState";
 import { useCart } from "../../domain/useCase/useCart";
-import ThemeToggleBut from "../../theme/ThemeToggleBut";
 import UserHeader from "./UserHeader";
 import "../style/TopBar.css";
 import { db } from "../../backEnd/firebaseConfig";
@@ -11,9 +10,11 @@ import { doc, getDoc } from "firebase/firestore";
 import { User } from '../../domain/models/User'; 
 import ConnectionWatcher from './ConnectionWatcher';
 
+type TopBarProps = {
+  onRequestLogout: () => void;
+};
 
-
-const TopBar = () => {
+const TopBar: React.FC<TopBarProps> = ({ onRequestLogout }) => {
   const navigate = useNavigate(); 
   const [authUser, setAuthUser] = useRecoilState(authState);
   const { cart, initializeCart } = useCart();
@@ -85,7 +86,8 @@ const TopBar = () => {
         <>
           <UserHeader
             userId={authUser.uid}
-            onLogout={() => setAuthUser(null)}
+            onLogout={onRequestLogout}
+            //() => setAuthUser(null)}
           />
           {!authUser.isDistributer && (
             <ActionButton

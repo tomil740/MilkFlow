@@ -1,0 +1,60 @@
+.logout-dialog__backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0; 
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.logout-dialog__container {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 320px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.logout-dialog__title {
+    margin: 0 0 12px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.logout-dialog__text {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.logout-dialog__buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.logout-dialog__button {
+    flex: 1;
+    padding: 8px 0;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.logout-dialog__cancel {
+    background-color: transparent;
+    border: 1px solid var(--color-outline);
+    color: var(--color-on-surface);
+}
+
+.logout-dialog__confirm {
+    background-color: var(--color-primary);
+    border: none;
+    color: var(--color-on-primary);
+}
