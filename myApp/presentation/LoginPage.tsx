@@ -6,64 +6,66 @@ import "./style/authintication.css";
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, loading, error } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  const validatePhone = (phone: string): boolean => {
+    return (
+      phone.length === 10 &&
+      phone.startsWith("05") &&
+      /^\d+$/.test(phone)
+    );
   };
+
+  useEffect(() => {
+    const valid = validatePhone(phone);
+    setIsFormValid(valid);
+    setPhoneError(valid || phone === "" ? "" : "יש להזין מספר טלפון תקני בפורמט 05XXXXXXXX");
+  }, [phone]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Reset errors
-    setEmailError("");
-    setPasswordError("");
-
-    // Validate email
-    if (!validateEmail(email)) {
-      setEmailError("Please enter a valid email address.");
+    if (!validatePhone(phone)) {
+      setPhoneError("יש להזין מספר טלפון תקני בפורמט 05XXXXXXXX");
       return;
     }
 
-    // Validate password
-    if (password.length < 6) {
-      setPasswordError("Password must be at least 6 characters long.");
-      return;
+    const email = `${phone}@mail.com`;
+    const password = phone;
+
+    const success = await login(email, password);
+    if (success) {
+      navigate("/");
+    } else {
+      setPhoneError("שגיאה בהתחברות. ודא שהמספר נכון.");
     }
-
-    // Proceed with login
-    const a = await login(email, password);
-    if (a) navigate("/");
-
   };
 
   return (
     <div className="login-container">
-      <h1>Login</h1>
+      <h1>התחברות</h1>
       <form onSubmit={handleSubmit} className="login-form">
+
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className={`form-input ${emailError ? "input-error" : ""}`}
+          type="tel"
+          placeholder="מספר טלפון (05XXXXXXXX)"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className={`form-input ${phoneError ? "input-error" : ""}`}
+          inputMode="numeric"
         />
-        {emailError && <p className="error-message">{emailError}</p>}
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className={`form-input ${passwordError ? "input-error" : ""}`}
-        />
-        {passwordError && <p className="error-message">{passwordError}</p>}
-        {error && <p className="error-message">Error: {error}</p>}
-        <button type="submit" className="submit-button" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        {phoneError && <p className="error-message">{phoneError}</p>}
+        {error && <p className="error-message">שגיאה: {error}</p>}
+
+        <button
+          type="submit"
+          className="submit-button"
+          disabled={!isFormValid || loading}
+        >
+          {loading ? "מתחבר..." : "התחבר"}
         </button>
       </form>
     </div>
@@ -71,3 +73,4 @@ const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
+

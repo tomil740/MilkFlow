@@ -8,7 +8,7 @@ interface ProductPreviewItemProps {
 const ProductPreviewItem: React.FC<ProductPreviewItemProps> = ({
   product,
   onClick, 
-}) => {
+}) => { 
    return (
      <div className="product-preview-item">
        <div className="product-image-container">
