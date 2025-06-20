@@ -7,7 +7,7 @@ export interface Demand {
   distributerId: string | null;
   status: "pending" | "placed" | "completed";
   createdAt: Date;
-  updatedAt: Date;
+  updateAt: Date;
   products: CartItem[];
 }
 
@@ -16,6 +16,6 @@ export interface DemandToPush {
   distributerId: string | null;
   status: "pending" | "placed" | "completed";
   createdAt: Date;
-  updatedAt: Date;
+  updateAt: Date;
   products: CartItem[];
 }

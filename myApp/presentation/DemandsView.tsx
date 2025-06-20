@@ -207,7 +207,7 @@ const DemandsView = () => {
                         : demand.distributerId!
                     }
                     amount={demand.products.length}
-                    lastUpdate={demand.updatedAt}
+                    lastUpdate={demand.updateAt}
                     status={demand.status}
                     onClick1={() => handleDemandClick(demand)}
                   />

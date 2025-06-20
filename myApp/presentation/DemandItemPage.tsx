@@ -160,7 +160,7 @@ const DemandItemPage: React.FC = () => {
           </div>
           <DatePresentation
             createdAt={demand.createdAt}
-            updatedAt={demand.updatedAt}
+            updatedAt={demand.updateAt}
           />
         </CardContent>
       </Card>

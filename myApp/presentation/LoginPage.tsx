@@ -33,12 +33,12 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    const email = `${phone}@mail.com`;
+    const email =`${phone}@mail.com`;
     const password = phone;
 
     const success = await login(email, password);
     if (success) {
-      navigate("/");
+      navigate("/"); 
     } else {
       setPhoneError("שגיאה בהתחברות. ודא שהמספר נכון.");
     }
