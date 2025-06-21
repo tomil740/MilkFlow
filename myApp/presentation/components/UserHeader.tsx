@@ -11,19 +11,6 @@ interface UserHeaderProps {
 
 const UserHeader: React.FC<UserHeaderProps> = ({ userId, onLogout }) => {
   const { loading, error, data } = useGetUserById(userId);
-  const [showLogout, setShowLogout] = useState(false);
-
-  useEffect(() => {
-    if (!onLogout) return; // no need for timer if logout behavior not needed
-
-    let timer: NodeJS.Timeout;
-    if (showLogout) {
-      timer = setTimeout(() => {
-        setShowLogout(false);
-      }, 1000);
-    }
-    return () => clearTimeout(timer);
-  }, [showLogout, onLogout]);
 
   if (loading) {
     return <div style={styles.container}>Loading...</div>;
@@ -44,17 +31,14 @@ const UserHeader: React.FC<UserHeaderProps> = ({ userId, onLogout }) => {
   const handleClick = () => {
     if (!onLogout) return; 
 
-    if (showLogout) {
       onLogout();
-    } else {
-      setShowLogout(true);
-    }
+  
   };
 
   return (
     <ActionButton
-      icon={showLogout && onLogout ? "🚪" : <PersonPinIcon />}
-      label={showLogout && onLogout ? "Logout" : data.name}
+      icon={<PersonPinIcon />}
+      label={data.name}
       onClick={handleClick}
     />
   );
@@ -89,4 +73,3 @@ const styles = {
     color: "var(--md-sys-color-error)",
   },
 };
-

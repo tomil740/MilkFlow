@@ -1,40 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface FetchImageProps {
   imgId: string;
+  alt?: string;
   className?: string;
   loading?: "lazy" | "eager";
 }
 
 const FetchImage: React.FC<FetchImageProps> = ({
   imgId,
+  alt,
   className,
   loading = "lazy",
 }) => {
-  const [imageSrc, setImageSrc] = useState<string>("");
-  const basePath = "productsImages/regular/"; // Prefix for regular images
-  const fallbackSrc = "productsImages/logos/large_logo.webp"; // Static fallback
-  const pngFallbackSrc = "productsImages/logos/large_logo.png"; // Static PNG fallback
+  const fallbackUrl = "https://cdn.jsdelivr.net/gh/tomil740/AssetsData@main/productsImages/logos/large_logo.webp";
+  const imageUrl = `https://cdn.jsdelivr.net/gh/tomil740/AssetsData@main/productsImages/regular/${imgId}.webp`;
 
-  useEffect(() => {
-    const image = new Image();
-    const webpSrc = `${basePath}${imgId}.webp`;
-    image.src = webpSrc;
-
-    image.onload = () => setImageSrc(webpSrc); // WebP loaded successfully
-    image.onerror = () => setImageSrc(fallbackSrc); // Fallback to default WebP
-  }, [imgId]);
+  const [src, setSrc] = useState(imageUrl);
 
   return (
-    <picture>
-      <source srcSet={imageSrc} type="image/webp" />
-      <img
-        src={pngFallbackSrc} // Default PNG fallback
-        loading={loading}
-        className={className}
-        alt=""
-      />
-    </picture>
+    <img
+      src={src}
+      alt={alt}
+      loading={loading}
+      className={className}
+      onError={() => setSrc(fallbackUrl)}
+    />
   );
 };
 

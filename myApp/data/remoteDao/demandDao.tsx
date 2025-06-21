@@ -39,7 +39,7 @@ export const fetchDemandQuery = (
     demandsRef,
     where(isDistributer ? "distributerId" : "userId", "==", uid),
     where("status", "==", status),
-    orderBy("updatedAt", "desc")
+    orderBy("updateAt", "desc")
   );
 
   if (limitResults) {
@@ -110,7 +110,7 @@ export const updateDemandStatus = async (
     // Perform the update and validate the status update
     await updateDoc(demandDoc, {
       status: nextStatus,
-      updatedAt: Timestamp.now(),
+      updateAt: Timestamp.now(),
     });
 
     const updatedDoc = await getDoc(demandDoc);
@@ -130,14 +130,14 @@ export async function addDemand(demand: Demand): Promise<void> {
       distributerId: demand.distributerId,
       status: demand.status,
       createdAt: demand.createdAt,
-      updatedAt: demand.updatedAt,
+      updateAt: demand.updateAt,
       products: demand.products,
     };
       // Add the demand to the Firestore "Demands" collection
       await addDoc(collection(db, "Demands"), {
         ...demandToPush,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        createdAt: Timestamp.now(),
+        updateAt: Timestamp.now(),
       });
   } catch (error) {
     console.error("Error adding demand:", error);

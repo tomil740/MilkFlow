@@ -54,7 +54,7 @@ export const useCreateDemand = () => {
         distributerId: userAuth.distributerId,
         status: "pending",
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updateAt: new Date(),
         products: cartItems,
       };
 

@@ -24,6 +24,9 @@ import { Demand } from "../domain/models/Demand";
 import { DatePresentation } from "./components/DatePresentation";
 import statusPresentation from "./util/statusPresentation";
 import { checkInternetConnection } from "../data/remoteDao/util/checkInternetConnection";
+import FetchImage from "./util/FetchImage"
+
+
 
 const DemandItemPage: React.FC = () => {
   const location = useLocation();
@@ -157,7 +160,7 @@ const DemandItemPage: React.FC = () => {
           </div>
           <DatePresentation
             createdAt={demand.createdAt}
-            updatedAt={demand.updatedAt}
+            updatedAt={demand.updateAt}
           />
         </CardContent>
       </Card>
@@ -174,14 +177,12 @@ const DemandItemPage: React.FC = () => {
         <List className="demand-products-list">
           {cartProducts.map((productItem, index) => (
             <ListItem key={index} className="demand-product-item">
-              <img
-                src={`/productsImages/regular/${productItem.imgKey}.webp`}
-                alt={productItem.name}
-                className="product-img"
-                onError={(e) => {
-                  e.currentTarget.src = `/productsImages/logos/large_logo.png`;
-                }}
-              />
+              <FetchImage
+               imgId={productItem.imgKey}
+               alt={productItem.name}
+               className="product-img"
+               loading="lazy"
+               />
               <div className="product-details">
                 <Typography variant="subtitle1">{productItem.name}</Typography>
                 <Typography variant="body2">

@@ -12,8 +12,11 @@ export default function MyApp() {
   const privateCustomerProducts = [
     60301, 60391, 90811, 60507, 60607, 71018, 70128, 71006, 80520, 61307, 61005,
     91303, 91201, 91221,
-  ];
+  ]; 
 
+  const ToscanaCustomerProducts = [
+    70128, 61005, 91303, 71308, 71301, 60525, 70808,90811
+  ];
 
   //admin actions:
 
