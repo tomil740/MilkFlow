@@ -73,4 +73,3 @@ const styles = {
     color: "var(--md-sys-color-error)",
   },
 };
-

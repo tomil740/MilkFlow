@@ -86,8 +86,10 @@ const TopBar: React.FC<TopBarProps> = ({ onRequestLogout }) => {
         <>
           <UserHeader
             userId={authUser.uid}
+
             onLogout={onRequestLogout}
             //() => setAuthUser(null)}
+
           />
           {!authUser.isDistributer && (
             <ActionButton
